@@ -736,7 +736,8 @@ const SITE = {
   email: "vaquerorvparktx@gmail.com",
   facebook: "https://www.facebook.com/profile.php?id=61590798300769",
   applyUrl: "", // paste the Innago rental application link here; until then Apply buttons jump to the inquiry form
-  formEndpoint: "", // optional: Web3Forms / Formspree / Apps Script URL. Empty = inquiry opens a pre-filled email instead
+  formEndpoint: "https://api.web3forms.com/submit", // Web3Forms; empty = inquiry opens a pre-filled email instead
+  formKey: "ce4d9809-b16e-4b91-86ab-95236f8177e8", // public Web3Forms access key (safe in client code); inquiries go to vaquerorvparktx@gmail.com
   fromRent: 400,
   announcement: "Now leasing",
   rentalTypes: [
@@ -971,8 +972,9 @@ $("#inq").onsubmit=async e=>{
   const body=`Name: ${d.name}\nPhone: ${d.phone||"-"}\nEmail: ${d.email}\nLooking for: ${d.type}\nMove-in: ${d.movein||"-"}\nPets: ${d.pets}\n\n${d.message||""}`;
   if(SITE.formEndpoint){
     try{
-      const r=await fetch(SITE.formEndpoint,{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},body:JSON.stringify({...d,subject:"Vaquero RV Park inquiry: "+d.name})});
-      if(!r.ok)throw 0; toast("Thanks! We'll be in touch shortly."); f.reset(); return;
+      const r=await fetch(SITE.formEndpoint,{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},body:JSON.stringify({access_key:SITE.formKey,from_name:"Vaquero RV Park website",replyto:d.email,subject:"Vaquero RV Park inquiry: "+d.name,...d})});
+      const j=await r.json().catch(()=>({}));
+      if(!r.ok||j.success===false)throw 0; toast("Thanks! We'll be in touch shortly."); f.reset(); return;
     }catch(_){ toast("Couldn't send. Opening your email app instead."); }
   }
   location.href=`mailto:${SITE.email}?subject=${encodeURIComponent("Vaquero RV Park inquiry: "+d.name)}&body=${encodeURIComponent(body)}`;
