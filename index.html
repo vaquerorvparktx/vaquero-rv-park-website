@@ -2,7 +2,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=Zilla+Slab:wght@600;700&display=swap">
-<meta name="description" content="Vaquero RV Park — long-term RV lots, RV rentals and mobile home lots in Pleasanton, TX. Free Wi-Fi, 24-hr surveillance, pets welcome. Minutes from H-E-B.">
+<meta name="description" content="Vaquero RV Park — long-term RV lots, park-owned RVs and tiny homes in Pleasanton, TX. Free Wi-Fi, 24-hr surveillance, cats and small dogs welcome. Minutes from H-E-B.">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"RVPark","name":"Vaquero RV Park","telephone":"+1-830-480-2590","email":"vaquerorvparktx@gmail.com",
 "address":{"@type":"PostalAddress","streetAddress":"772 Humble Camp Rd","addressLocality":"Pleasanton","addressRegion":"TX","postalCode":"78064","addressCountry":"US"},
@@ -417,7 +417,7 @@ dialog{overflow:auto;overscroll-behavior:contain}
       <a href="#lots">Lots</a><a href="#map">Park map</a><a href="#rates">Rates</a><a href="#amenities">Amenities</a><a href="#location">Location</a><a href="#phase2">Expansion</a><a href="#faq">FAQ</a>
     </nav>
     <a class="call" id="navcall" href="#"></a>
-    <a class="btn btn-primary" href="#apply" data-apply>Apply</a>
+    <a class="btn btn-primary" href="#apply" data-apply>Inquire</a>
     <button class="menu-btn" id="menubtn" aria-expanded="false" aria-controls="navlinks">Menu</button>
   </div>
 </header>
@@ -429,10 +429,10 @@ dialog{overflow:auto;overscroll-behavior:contain}
   <div class="wrap hero-in">
     <p class="kicker">772 Humble Camp Rd · Pleasanton, Texas</p>
     <h1>Put down roots where the <em>cowboy</em> was born</h1>
-    <p class="sub">Monthly RV lots, RV rentals and mobile home lots, made for people who live here. Not a weekend stopover. Quiet, secure, and five minutes from H-E-B.</p>
+    <p class="sub">Monthly RV lots, park-owned RVs and tiny homes, made for people who live here. Not a weekend stopover. Quiet, secure, and five minutes from H-E-B.</p>
     <div class="ctas">
       <a class="btn btn-primary" href="#lots">See open lots</a>
-      <a class="btn btn-line" href="#apply" data-apply>Apply online</a>
+      <a class="btn btn-line" href="#apply" data-apply>Send an inquiry</a>
     </div>
   </div>
   <div class="facts"><ul class="wrap" id="facts"></ul></div>
@@ -446,8 +446,8 @@ dialog{overflow:auto;overscroll-behavior:contain}
       <p class="lede">Vaquero is a long-term community. Our neighbors are oilfield and pipeline crews working the Eagle Ford, retirees, and families who want a simple, affordable place to live close to San Antonio without paying San Antonio prices.</p>
     </div>
     <dl class="why-list" style="margin:0">
-      <div><dt>Monthly leases</dt><dd>One flat monthly rent. Apply online, sign your lease, and pay through our resident system.</dd></div>
-      <div><dt>Four ways to live</dt><dd>Bring your RV (30 or 50 amp), rent one of our RVs on a lot, or place a mobile home.</dd></div>
+      <div><dt>Monthly leases</dt><dd>Month-to-month leases. Tell us what you need, sign your lease, and pay through our resident system.</dd></div>
+      <div><dt>Ways to live</dt><dd>Bring your RV (30 or 50 amp), or rent one of our park-owned RVs or tiny homes.</dd></div>
       <div><dt>Safe &amp; connected</dt><dd>Free park-wide Wi-Fi and 24-hour camera surveillance. Security gates are coming soon.</dd></div>
       <div><dt>Pets welcome</dt><dd>Bring the dog. A fenced dog park is part of the next build-out.</dd></div>
     </dl>
@@ -466,7 +466,6 @@ dialog{overflow:auto;overscroll-behavior:contain}
       <select id="typefilter" aria-label="Rental type"></select>
     </div>
     <div class="lots" id="lotgrid"></div>
-    <p class="sample" style="margin-top:14px">Sample listings for layout review.</p>
   </div>
 </section>
 
@@ -496,18 +495,18 @@ dialog{overflow:auto;overscroll-behavior:contain}
 <section class="sec" id="rates">
   <div class="wrap rates">
     <div class="price">
-      <span class="per">Monthly lot rent</span>
+      <span class="per">Monthly lot rent from</span>
       <div class="amt num" id="baserent"></div>
-      <p>One rate across the park for now. No nightly or weekend stays. We're a monthly community.</p>
-      <a class="btn btn-primary" href="#apply" data-apply>Start application</a>
+      <p>$400 for a 30-amp RV lot, $500 for a 50-amp lot. Park-owned RVs and tiny homes cost more, depending on the unit. No nightly or weekend stays. We're a monthly community.</p>
+      <a class="btn btn-primary" href="#apply" data-apply>Send an inquiry</a>
     </div>
     <div>
       <div class="sec-head" style="margin-bottom:18px">
         <p class="eyebrow">Rates &amp; rental types</p>
-        <h2>All four rental types available</h2>
+        <h2>Pick the setup that fits</h2>
       </div>
       <div class="types" id="types"></div>
-      <p class="note">Rates by rental type are coming. Deposit is set per lot and shown on each listing. Call <span class="phone-text"></span> for current specials.</p>
+      <p class="note">Open lots show their own rent and deposit. Call <span class="phone-text"></span> for current specials.</p>
     </div>
   </div>
 </section>
@@ -644,7 +643,8 @@ dialog{overflow:auto;overscroll-behavior:contain}
           <label for="f-type">Looking for<select id="f-type" name="type"></select></label>
           <label for="f-date">Move-in<input id="f-date" name="movein" type="month"></label>
         </div>
-        <label for="f-msg">Message<textarea id="f-msg" name="message" placeholder="Tell us about your rig, pets, and how long you plan to stay."></textarea></label>
+        <label for="f-pets">Pets<select id="f-pets" name="pets"><option>No pets</option><option>Cat(s)</option><option>Small dog(s)</option><option>Cat(s) and small dog(s)</option><option>Other / larger dog (ask us)</option></select></label>
+        <label for="f-msg">Message<textarea id="f-msg" name="message" placeholder="Tell us about your rig, how long you plan to stay, and anything else we should know."></textarea></label>
         <button class="btn btn-primary" type="submit" style="justify-self:start">Send inquiry</button>
         <p class="note" style="margin:0">Or call/text <a class="phone-link" href="#"></a> · <a class="email-link" href="#"></a></p>
       </form>
@@ -660,10 +660,10 @@ dialog{overflow:auto;overscroll-behavior:contain}
         <a href="#top" class="signlink" aria-label="Vaquero RV Park home">
           <img src="photos/sign-board.webp" alt="Vaquero RV Park — monthly and extended stays" width="640" height="320">
         </a>
-        <p style="color:var(--ink-2);max-width:36ch;margin-top:16px">Long-term RV, RV rental and mobile home lots at 772 Humble Camp Rd, Pleasanton, TX 78064.</p>
+        <p style="color:var(--ink-2);max-width:36ch;margin-top:16px">Long-term RV lots, park-owned RVs and tiny homes at 772 Humble Camp Rd, Pleasanton, TX 78064.</p>
       </div>
       <div><h4>Reach us</h4><ul><li><a class="phone-link" href="#"></a></li><li><a class="email-link" href="#"></a></li><li><a class="fb-link" target="_blank" rel="noopener" href="#">Facebook</a></li></ul></div>
-      <div><h4>Park</h4><ul><li><a href="#lots">Available lots</a></li><li><a href="#rates">Rates</a></li><li><a href="#phase2">Phase 2 expansion</a></li><li><a href="#apply" data-apply>Apply online</a></li></ul></div>
+      <div><h4>Park</h4><ul><li><a href="#lots">Available lots</a></li><li><a href="#rates">Rates</a></li><li><a href="#phase2">Phase 2 expansion</a></li><li><a href="#apply" data-apply>Send an inquiry</a></li></ul></div>
     </div>
     <p class="foot small">© 2026 Vaquero RV Park · SKAT-OS Holdings LLC</p>
   </div>
@@ -676,7 +676,7 @@ dialog{overflow:auto;overscroll-behavior:contain}
 <nav class="mbar" aria-label="Quick contact">
   <a class="phone-link-bar" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h4l2 5-3 2a12 12 0 0 0 6 6l2-3 5 2v4a2 2 0 0 1-2 2A18 18 0 0 1 3 5a2 2 0 0 1 2-2z"/></svg>Call</a>
   <a class="sms-link" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg>Text</a>
-  <a class="go" href="#apply" data-apply>Apply now</a>
+  <a class="go" href="#apply" data-apply>Send an inquiry</a>
 </nav>
 <div class="chat" id="chat" hidden role="dialog" aria-label="Chat with Vaquero RV Park">
   <div class="chat-h">
@@ -708,19 +708,21 @@ dialog{overflow:auto;overscroll-behavior:contain}
    ============================================================ */
 const SITE = {
   // demoMode shows the "sample data" banner and notes. Set to false the day real lot data goes in.
-  demoMode: true,
+  demoMode: false,
   name: "Vaquero RV Park",
   phone: "(830) 480-2590", phoneHref: "tel:+18304802590",
   email: "vaquerorvparktx@gmail.com",
   facebook: "https://www.facebook.com/profile.php?id=61590798300769",
-  applyUrl: "", // paste the Innago rental application link here
-  baseRent: 450,
+  applyUrl: "", // paste the Innago rental application link here; until then Apply buttons jump to the inquiry form
+  formEndpoint: "", // optional: Web3Forms / Formspree / Apps Script URL. Empty = inquiry opens a pre-filled email instead
+  fromRent: 400,
   announcement: "Now leasing",
   rentalTypes: [
-    { id: "rv30",  name: "RV lot · 30 amp",      desc: "Bring your own RV or travel trailer. 30-amp electrical service.", rent: 450 },
-    { id: "rv50",  name: "RV lot · 50 amp",      desc: "For larger rigs and fifth wheels that need 50-amp service.",      rent: 450 },
-    { id: "rvpark",name: "Lot + park-owned RV",  desc: "No rig? Move straight into an RV we own, already set up on its lot.", rent: 450 },
-    { id: "mh",    name: "Mobile home lot",      desc: "Space for a manufactured or mobile home on a monthly lease.",       rent: 450 }
+    { id: "lot30", name: "RV lot · 30 amp",      desc: "Bring your own RV or travel trailer. 30-amp electrical service.", rent: 400 },
+    { id: "lot50", name: "RV lot · 50 amp",      desc: "For larger rigs and fifth wheels that need 50-amp service.",      rent: 500 },
+    { id: "rvpark",name: "Park-owned RV",        desc: "No rig? Move straight into an RV we own, already set up on its lot. Rent depends on the unit.", rent: 700, from: true },
+    { id: "tiny",  name: "Park-owned tiny home", desc: "Efficiency tiny homes on a 50-amp lot. Rent depends on the unit.", rent: 875, from: true },
+    { id: "rto",   name: "Rent-to-own",          desc: "Rent-to-own homes on select lots. Ask us what's coming available.", rent: null }
   ],
   photos: {
     hero: "photos/aerial-hero.jpg", front: "photos/aerial-front.jpg",
@@ -730,7 +732,7 @@ const SITE = {
   amenities: [
     { name: "Free Wi-Fi", status: "live", desc: "Park-wide outdoor access points. Stream, work, video-call.", icon: "wifi" },
     { name: "24-hr surveillance", status: "live", desc: "Camera coverage around the clock across the property.", icon: "cam" },
-    { name: "Pets welcome", status: "live", desc: "Dogs and cats are part of the neighborhood here.", icon: "paw" },
+    { name: "Pets welcome", status: "live", desc: "Cats and small dogs are part of the neighborhood here.", icon: "paw" },
     { name: "Security gates", status: "soon", desc: "Controlled entry for residents and their guests.", icon: "gate" },
     { name: "Dog park", status: "soon", desc: "A fenced off-leash area, built with Phase 2.", icon: "bone" },
     { name: "Kids play area", status: "soon", desc: "A central playground, built with Phase 2.", icon: "play" }
@@ -753,39 +755,44 @@ const SITE = {
   ],
   faq: [
     ["Do you offer nightly or weekly stays?", "No. Vaquero is a monthly, long-term community. Our leases are built for people who live here."],
-    ["What rental types are available?", "RV lots with 30-amp or 50-amp service, a lot with a park-owned RV, and mobile home lots."],
-    ["How much is rent?", "Lot rent is $450 per month right now. Each listing shows its own deposit."],
-    ["Are pets allowed?", "Yes, pets are welcome. A fenced dog park is coming with our Phase 2 expansion."],
-    ["How do I apply?", "Use the online application. It goes straight to our property manager, and approved residents pay rent and send maintenance requests through the resident portal."],
+    ["What rental types are available?", "RV lots with 30-amp or 50-amp service, park-owned RVs, park-owned tiny homes, and a few rent-to-own homes."],
+    ["How much is rent?", "RV lots are $400 per month (30-amp) or $500 per month (50-amp). Park-owned RVs and tiny homes cost more and vary by unit. Each open lot lists its own rent and deposit."],
+    ["Are pets allowed?", "Yes, cats and small dogs are welcome. A fenced dog park is coming with our Phase 2 expansion."],
+    ["How do I apply?", "Send us the inquiry form or call or text us. We'll follow up about the lot you want. Approved residents pay rent and send maintenance requests through the resident portal."],
     ["Is there internet?", "Yes. Free Wi-Fi covers the park, and 24-hour camera surveillance is active."]
   ]
 };
 
 /* sample lot records: replaced by the Google Sheet sync */
-const TYPES = ["rv30","rv50","rv30","mh","rv50","rv30","rvpark","rv50","rv30","mh"];
+/* Unit roster from Innago (2026-10-01): [lot, type, amps]. Rents of occupied lots stay private; only open lots carry rent/deposit below. */
+const ROWS = [[1,"rvpark",30],[2,"rvpark",30],[3,"lot30",30],[4,"rvpark",30],[5,"tiny",50],[6,"rto",50],[7,"rvpark",30],[8,"lot30",30],[9,"rto",50],[10,"rvpark",30],[11,"lot50",50],[12,"rto",50],[13,"rto",30],[14,"rto",50],[15,"lot30",30],[16,"rvpark",30],[17,"rvpark",30],[18,"rvpark",30],[19,"rvpark",30],[20,"lot30",30],[21,"rvpark",30],[22,"rto",50],[23,"rto",50],[23.5,"rvpark",30],[24,"tiny",50],[25,"lot30",30],[26,"lot30",30],[27,"rvpark",50],[28,"rto",50],[29,"rvpark",50],[30,"rvpark",50],[31,"rvpark",30],[32,"rto",30],[33,"tiny",50]];
 const SPECIAL = {
-  7:  { status:"available", type:"rv50", deposit:450, desc:"Wide back-in lot under the live oaks on the inside loop. Room for a big fifth wheel plus a truck.", features:["50-amp","Water & sewer hookup","Shade trees","Wi-Fi strong signal"] },
-  19: { status:"available", type:"rv30", deposit:450, desc:"Center-row lot close to the entrance. An easy in-and-out for work trucks.", features:["30-amp","Water & sewer hookup","Near entrance","Camera covered"] },
-  31: { status:"available", type:"rvpark", deposit:450, desc:"Move-in ready park-owned travel trailer on its own lot. Bring your bags and your dog.", features:["RV included","30-amp","Pets OK","Move-in ready"] },
-  26: { status:"pending", type:"mh", deposit:450, desc:"Mobile home lot along the back row. Application under review.", features:["Mobile home","Back row","Quiet"] }
+  10: { status:"available", type:"rvpark", ph:9, rent:725, deposit:550, desc:"Park-owned 1 bed / 1 bath RV, ready for move-in. Utilities, free Wi-Fi and laundry access included. Month-to-month.", features:["1 bed / 1 bath","30-amp","Utilities included","A/C","Refrigerator","Cats & small dogs OK"] },
+  21: { status:"available", type:"rvpark", ph:8, rent:800, deposit:550, desc:"Park-owned 2 bed / 1 bath RV, furnished and ready for move-in. Utilities, free Wi-Fi and laundry access included. Month-to-month.", features:["2 bed / 1 bath","30-amp","Furnished","Utilities included","A/C","Assigned parking","Cats & small dogs OK"] },
+  24: { status:"available", type:"tiny", ph:7, rent:875, deposit:550, desc:"Efficiency tiny home with a patio and lawn, furnished and ready for move-in. Utilities, free Wi-Fi and laundry access included. Month-to-month.", features:["Tiny home","1 bed / 1 bath","50-amp","Furnished","Patio & lawn","Utilities included","Cats & small dogs OK"] },
+  30: { status:"available", type:"rvpark", ph:7, rent:725, deposit:550, desc:"Park-owned 1 bed / 1 bath RV, ready for move-in. Utilities, free Wi-Fi and laundry access included. Month-to-month.", features:["1 bed / 1 bath","50-amp","Utilities included","A/C","Refrigerator","Assigned parking","Cats & small dogs OK"] }
 };
-const LOTS = Array.from({length:34},(_,i)=>{
-  const id=i+1, s=SPECIAL[id]||{};
-  return { id, status:s.status||"occupied", type:s.type||TYPES[i%TYPES.length], rent:SITE.baseRent, deposit:s.deposit??null,
-           desc:s.desc||"Currently leased. Join the waitlist to hear when it opens.", features:s.features||[],
-           photos:[SITE.photos.front,SITE.photos.hero,SITE.photos.pano], focus:`${(i*29)%100}% ${(i*47)%100}%` };
+const LOTS = ROWS.map(([id,type,amps],i)=>{
+  const s=SPECIAL[id]||{};
+  return { id, status:s.status||"occupied", type, amps, rent:s.rent??null, deposit:s.deposit??null,
+           desc:s.desc||"Currently leased. Join the waitlist to hear when it opens.", features:s.features||[amps+"-amp"],
+           photos:s.ph?Array.from({length:s.ph},(_,k)=>`photos/lot${id}-${k+1}.jpg`):[SITE.photos.front,SITE.photos.hero,SITE.photos.pano],
+           focus:s.ph?"50% 50%":`${(i*29)%100}% ${(i*47)%100}%` };
 });
 
 /* ---------- helpers ---------- */
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const typeName=id=>SITE.rentalTypes.find(t=>t.id===id)?.name||id;
 const money=n=>n==null?"Ask":"$"+n.toLocaleString();
+const lotNo=id=>String(id).padStart(2,"0");
 const STATUS={available:"Available",pending:"Pending",occupied:"Occupied"};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 function toast(msg){const t=document.createElement("div");t.className="toast";t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),3800)}
 function openApply(lot){
   if(SITE.applyUrl){window.open(SITE.applyUrl,"_blank","noopener");return}
-  toast(`Mockup: opens the Innago application${lot?` for Lot ${lot}`:""}. Link still to be added.`);
+  const d=$("#lotdlg"); if(d&&d.open)d.close();
+  if(lot){const m=$("#f-msg"); if(m&&!m.value) m.value=`I'm interested in Lot ${lot}.`;}
+  $("#contact").scrollIntoView({behavior:"smooth"}); setTimeout(()=>$("#f-name").focus(),500);
 }
 
 /* ---------- demo banner ---------- */
@@ -804,10 +811,10 @@ $("#menubtn").onclick=()=>{const o=$("#navlinks").classList.toggle("open");$("#m
 $$("#navlinks a").forEach(a=>a.onclick=()=>$("#navlinks").classList.remove("open"));
 
 const avail=LOTS.filter(l=>l.status==="available");
-$("#announce").innerHTML=`${esc(SITE.announcement)}: <b>${avail.length} lots open</b> at ${money(SITE.baseRent)}/mo · <a href="#lots">See lots →</a>`;
+$("#announce").innerHTML=`${esc(SITE.announcement)}: <b>${avail.length} lots open</b> · lots from ${money(SITE.fromRent)}/mo · <a href="#lots">See lots →</a>`;
 const occPct=Math.round(LOTS.filter(l=>l.status==="occupied").length/LOTS.length*100);
 $("#facts").innerHTML=[
-  [money(SITE.baseRent),"Per month"],[avail.length+" open","Lots right now"],["Free","Park-wide Wi-Fi"],["24 / 7","Camera surveillance"],["5 min","To H-E-B"]
+  ["From "+money(SITE.fromRent),"Per month"],[avail.length+" open","Lots right now"],["Free","Park-wide Wi-Fi"],["24 / 7","Camera surveillance"],["5 min","To H-E-B"]
 ].map(([b,s])=>`<li><b class="num">${b}</b><span>${s}</span></li>`).join("");
 
 /* ---------- lots grid ---------- */
@@ -826,9 +833,9 @@ function renderLots(){
     <button class="lot is-${l.status}" type="button" data-lot="${l.id}" aria-label="Lot ${l.id}, ${STATUS[l.status]}, ${esc(typeName(l.type))}">
       <div class="ph"><img loading="lazy" src="${l.photos[0]}" alt="" style="object-position:${l.focus}"><span class="badge ${l.status}">${STATUS[l.status]}</span></div>
       <div class="body">
-        <div class="row"><span class="no num"><small>LOT</small>${String(l.id).padStart(2,"0")}</span><span class="rent num">${money(l.rent)}<small>/mo</small></span></div>
+        <div class="row"><span class="no num"><small>LOT</small>${lotNo(l.id)}</span>${l.rent!=null?`<span class="rent num">${money(l.rent)}<small>/mo</small></span>`:""}</div>
         <span class="type">${esc(typeName(l.type))}</span>
-        <span class="dep num">Deposit ${money(l.deposit)}</span>
+        ${l.deposit!=null?`<span class="dep num">Deposit ${money(l.deposit)}</span>`:""}
       </div>
     </button>`).join(""):`<p class="lede">No lots match. Try another filter, or <a href="#contact">join the waitlist</a>.</p>`;
 }
@@ -844,17 +851,17 @@ function openLot(id){
   $$("#dlgthumbs button").forEach((b,i)=>b.onclick=()=>setImg(i));
   const open=l.status!=="occupied";
   $("#dlgbody").innerHTML=`
-    <div class="dlg-top"><div style="display:grid;gap:8px"><span class="badge ${l.status}" style="justify-self:start">${STATUS[l.status]}</span><h3 id="dlgtitle">Lot ${String(l.id).padStart(2,"0")}</h3></div></div>
+    <div class="dlg-top"><div style="display:grid;gap:8px"><span class="badge ${l.status}" style="justify-self:start">${STATUS[l.status]}</span><h3 id="dlgtitle">Lot ${lotNo(l.id)}</h3></div></div>
     <p style="color:var(--ink-2)">${esc(l.desc)}</p>
     <div class="specs">
-      <div><span>Monthly rent</span><b class="num">${money(l.rent)}</b></div>
-      <div><span>Deposit</span><b class="num">${money(l.deposit)}</b></div>
+      ${l.rent!=null?`<div><span>Monthly rent</span><b class="num">${money(l.rent)}</b></div>`:""}
+      ${l.deposit!=null?`<div><span>Deposit</span><b class="num">${money(l.deposit)}</b></div>`:""}
       <div><span>Type</span><b>${esc(typeName(l.type))}</b></div>
       <div><span>Lease</span><b>Monthly</b></div>
     </div>
     ${l.features.length?`<div class="feat">${l.features.map(f=>`<span>${esc(f)}</span>`).join("")}</div>`:""}
     <div class="dlg-cta">
-      ${l.status==="available"?`<button class="btn btn-primary" type="button" id="dlgapply">Apply for Lot ${l.id}</button>`:""}
+      ${l.status==="available"?`<button class="btn btn-primary" type="button" id="dlgapply">Ask about Lot ${l.id}</button>`:""}
       <a class="btn btn-line" href="${SITE.phoneHref}">Call ${SITE.phone}</a>
       ${open?"":`<a class="btn btn-line" href="#contact" id="dlgwait">Join waitlist</a>`}
     </div>`;
@@ -898,7 +905,7 @@ dlg.addEventListener("click",e=>{if(e.target===dlg)dlg.close()});
     const l=LOTS[id-1], g=el("g",{class:"lotrect",tabindex:"0",role:"button","aria-label":`Lot ${l.id}, ${STATUS[l.status]}`});
     el("rect",{x:r.x0+i*r.w+2,y:r.y,width:r.w-4,height:r.h,rx:"2",fill:fill[l.status],stroke:"var(--paper)","stroke-width":"1"},g);
     el("text",{x:r.x0+i*r.w+r.w/2,y:r.y+r.h/2+1,"text-anchor":"middle","dominant-baseline":"middle",class:"lotlbl","font-family":"IBM Plex Mono, monospace","font-weight":"500",
-      fill:l.status==="occupied"?"var(--ink-2)":"var(--paper)"},g).textContent=String(l.id).padStart(2,"0");
+      fill:l.status==="occupied"?"var(--ink-2)":"var(--paper)"},g).textContent=lotNo(l.id);
     g.addEventListener("click",()=>openLot(l.id));
     g.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();openLot(l.id)}});
   }});
@@ -912,8 +919,8 @@ dlg.addEventListener("click",e=>{if(e.target===dlg)dlg.close()});
 })();
 
 /* ---------- rates, amenities, nearby, todo, faq ---------- */
-$("#baserent").innerHTML=`<sup>$</sup>${SITE.baseRent}`;
-$("#types").innerHTML=SITE.rentalTypes.map(t=>`<div class="type-row"><h3>${esc(t.name)}</h3><span class="p num">${money(t.rent)}/mo</span><p>${esc(t.desc)}</p></div>`).join("");
+$("#baserent").innerHTML=`<sup>$</sup>${SITE.fromRent}`;
+$("#types").innerHTML=SITE.rentalTypes.map(t=>`<div class="type-row"><h3>${esc(t.name)}</h3><span class="p num">${t.rent==null?"Ask":(t.from?"From ":"")+money(t.rent)+"/mo"}</span><p>${esc(t.desc)}</p></div>`).join("");
 $("#f-type").innerHTML=SITE.rentalTypes.map(t=>`<option>${esc(t.name)}</option>`).join("")+`<option>Phase 2 waitlist</option>`;
 $("#waitlist").onclick=()=>{$("#f-type").value="Phase 2 waitlist"};
 const ICON={
@@ -936,7 +943,19 @@ const lb=$("#lightbox");
 $$("#gallery button").forEach(b=>b.onclick=()=>{const i=b.querySelector("img");$("#lbimg").src=i.src;$("#lbimg").alt=i.alt;$("#lbcap").textContent=i.alt;lb.showModal()});
 $("#lbx").onclick=()=>lb.close();
 lb.addEventListener("click",e=>{if(e.target===lb)lb.close()});
-$("#inq").onsubmit=e=>{e.preventDefault();toast(`Mockup: inquiry would email ${SITE.email} and log a lead for the outreach agent.`);e.target.reset()};
+$("#inq").onsubmit=async e=>{
+  e.preventDefault();
+  const f=e.target, d=Object.fromEntries(new FormData(f));
+  const body=`Name: ${d.name}\nPhone: ${d.phone||"-"}\nEmail: ${d.email}\nLooking for: ${d.type}\nMove-in: ${d.movein||"-"}\nPets: ${d.pets}\n\n${d.message||""}`;
+  if(SITE.formEndpoint){
+    try{
+      const r=await fetch(SITE.formEndpoint,{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},body:JSON.stringify({...d,subject:"Vaquero RV Park inquiry: "+d.name})});
+      if(!r.ok)throw 0; toast("Thanks! We'll be in touch shortly."); f.reset(); return;
+    }catch(_){ toast("Couldn't send. Opening your email app instead."); }
+  }
+  location.href=`mailto:${SITE.email}?subject=${encodeURIComponent("Vaquero RV Park inquiry: "+d.name)}&body=${encodeURIComponent(body)}`;
+  f.reset();
+};
 
 /* ---------- panorama ---------- */
 (function(){
@@ -956,19 +975,19 @@ $("#inq").onsubmit=e=>{e.preventDefault();toast(`Mockup: inquiry would email ${S
 (function(){
   const box=$("#chat"), msgs=$("#msgs"), fab=$("#chatfab");
   const add=(html,who="bot")=>{const d=document.createElement("div");d.className="m "+who;d.innerHTML=html;msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight};
-  const applyBtn=`<br><a class="inline" href="#" data-apply>Start application →</a>`;
+  const applyBtn=`<br><a class="inline" href="#" data-apply>Send an inquiry →</a>`;
   function answer(q){
     q=q.toLowerCase();
     const av=LOTS.filter(l=>l.status==="available");
-    if(/avail|open|vacan|lot/.test(q)) return `We have <b>${av.length} lots open</b>: ${av.map(l=>`Lot ${l.id} (${typeName(l.type)})`).join(", ")}. Each is ${money(SITE.baseRent)}/month.<br><a class="inline" href="#lots">View lots →</a>`;
-    if(/rate|rent|price|cost|how much|\$|deposit/.test(q)) return `Lot rent is <b>${money(SITE.baseRent)}/month</b> for RV lots (30 or 50 amp), lots with a park-owned RV, and mobile home lots. Each listing shows its deposit.`+applyBtn;
-    if(/pet|dog|cat/.test(q)) return `Pets are welcome! A fenced dog park is coming with our Phase 2 expansion.`;
-    if(/apply|application|move in|lease/.test(q)) return `Applying takes a few minutes online. Our property manager reviews it and gets back to you.`+applyBtn;
+    if(/avail|open|vacan|lot/.test(q)) return `We have <b>${av.length} lots open</b>: ${av.map(l=>`Lot ${l.id} (${typeName(l.type)})`).join(", ")}. ${av.map(l=>`Lot ${l.id} is ${money(l.rent)}/month`).join("; ")}.<br><a class="inline" href="#lots">View lots →</a>`;
+    if(/rate|rent|price|cost|how much|\$|deposit/.test(q)) return `RV lots are <b>$400/month</b> (30 amp) or <b>$500/month</b> (50 amp). Park-owned RVs and tiny homes vary by unit, and open lots show their rent and $550 deposit.`+applyBtn;
+    if(/pet|dog|cat/.test(q)) return `Cats and small dogs are welcome! A fenced dog park is coming with our Phase 2 expansion.`;
+    if(/apply|application|move in|lease/.test(q)) return `Send us the inquiry form or call or text us. We will get back to you quickly.`+applyBtn;
     if(/where|address|locat|direction|heb|h-e-b|walmart|bank|store/.test(q)) return `We're at <b>772 Humble Camp Rd, Pleasanton, TX 78064</b>, about 5 minutes from H-E-B and Wells Fargo on Oaklawn Rd and 40 minutes from San Antonio.<br><a class="inline" href="#location">See location →</a>`;
     if(/wifi|wi-fi|internet|secur|camera|safe|gate/.test(q)) return `Free Wi-Fi covers the park and 24-hour camera surveillance is active. Security gates are coming soon.`;
     if(/night|week|short|weekend|daily/.test(q)) return `We focus on monthly, long-term residents, so we don't offer nightly or weekend stays.`;
     if(/expan|phase|new lot|playground|kids|play/.test(q)) return `Phase 2 adds 41 lots on 3 acres next door, plus new roads, a kids play area, a dog park and a recreation area.<br><a class="inline" href="#phase2">Read the plan →</a>`;
-    if(/rv|mobile|trailer|amp|50|30/.test(q)) return `We rent four ways: RV lot with 30 amp, RV lot with 50 amp, lot plus a park-owned RV, and mobile home lots.`;
+    if(/rv|mobile|trailer|amp|50|30/.test(q)) return `We rent RV lots (30 or 50 amp), park-owned RVs, park-owned tiny homes, and a few rent-to-own homes.`;
     return `Good question. I'll pass it along. For a fast answer, call or text <a href="${SITE.phoneHref}">${SITE.phone}</a> or email <a href="mailto:${SITE.email}">${SITE.email}</a>.`;
   }
   const ask=q=>{

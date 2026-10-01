@@ -13,9 +13,9 @@ use strict; use warnings; use MIME::Base64; use File::Path qw(make_path); use Fi
 
 my $SITE_URL = $ENV{SITE_URL} || 'https://vaquerorvpark.com';
 $SITE_URL =~ s{/$}{};
-my $TITLE = 'Vaquero RV Park | Monthly RV &amp; Mobile Home Lots in Pleasanton, TX';
-my $DESC  = 'Long-term RV lots, park-owned RV rentals and mobile home lots in Pleasanton, Texas. '
-          . '$450/month, free Wi-Fi, 24-hour surveillance, pets welcome. Minutes from H-E-B.';
+my $TITLE = 'Vaquero RV Park | Monthly RV Lots &amp; Park-Owned RVs in Pleasanton, TX';
+my $DESC  = 'Long-term RV lots, park-owned RVs and tiny homes in Pleasanton, Texas. '
+          . 'Lots from $400/month, free Wi-Fi, 24-hour surveillance, cats and small dogs welcome. Minutes from H-E-B.';
 
 open my $fh, '<:raw', 'index.html' or die "index.html: $!";
 my $src = do { local $/; <$fh> }; close $fh;
