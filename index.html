@@ -477,7 +477,7 @@ dialog{overflow:auto;overscroll-behavior:contain}
       <p class="lede">Every lot in the park, colored by status. Tap any lot to see its details.</p>
     </div>
     <div class="map-wrap">
-      <div class="map-scroll"><svg id="parkmap" viewBox="0 0 1000 560" role="img" aria-label="Site map of Vaquero RV Park showing lot status"></svg></div>
+      <div class="map-scroll"><svg id="parkmap" viewBox="0 0 1000 660" role="img" aria-label="Site map of Vaquero RV Park: four rows of lots along Humble Camp Rd, with the Phase 2 land behind the park"></svg></div>
       <aside class="map-side">
         <div class="tally" id="tally"></div>
         <div class="legend">
@@ -486,7 +486,7 @@ dialog{overflow:auto;overscroll-behavior:contain}
           <span><i style="background:var(--lot-occ)"></i>Occupied</span>
           <span><i style="background:repeating-linear-gradient(45deg,var(--sunk) 0 4px,var(--rule) 4px 7px)"></i>Phase 2 (planned)</span>
         </div>
-        <p class="note" style="margin:0">Illustrative layout. Phase 2 (41 lots) sits on the land to the west. Swap in the surveyed site plan when it's ready.</p>
+        <p class="note" style="margin:0">Lot numbers and row layout match the park. Phase 2 (41 lots) goes on the 3 acres directly behind the park. Swap in the surveyed site plan when it is ready.</p>
       </aside>
     </div>
   </div>
@@ -592,8 +592,8 @@ dialog{overflow:auto;overscroll-behavior:contain}
     <div>
       <div class="sec-head" style="margin:0">
         <p class="eyebrow">Phase 2 expansion</p>
-        <h2>41 more lots on 3 acres next door</h2>
-        <p class="lede">We're growing onto the land beside the park. The plan adds new paved roads and new lots, plus spaces the whole community can use.</p>
+        <h2>41 more lots on the 3 acres behind us</h2>
+        <p class="lede">We own the 3 undeveloped acres directly behind the park, and that is where we are growing. The plan adds new paved roads and new lots, plus spaces the whole community can use.</p>
       </div>
       <div class="p2-stats">
         <div><b class="num">3</b><span>Acres</span></div>
@@ -874,47 +874,83 @@ function openLot(id){
 $("#dlgx").onclick=()=>dlg.close();
 dlg.addEventListener("click",e=>{if(e.target===dlg)dlg.close()});
 
-/* ---------- park map ---------- */
+/* ---------- park map ----------
+   Geometry follows the owner's RV Park Layout sheet: four rows of pads with drive aisles
+   between them, numbering running right to left (lot 1 at the east end of the front row),
+   the shed at the west end of the back row, the dumpster at the north-east corner, and
+   Humble Camp Rd along the south edge. Phase 2's 3 acres sit BEHIND the park (north). */
 (function(){
   const NS="http://www.w3.org/2000/svg", svg=$("#parkmap");
   const el=(t,a,p=svg)=>{const n=document.createElementNS(NS,t);for(const k in a)n.setAttribute(k,a[k]);p.appendChild(n);return n};
-  const defs=el("defs",{});const pat=el("pattern",{id:"hatch",width:"10",height:"10",patternUnits:"userSpaceOnUse",patternTransform:"rotate(45)"},defs);
-  el("rect",{width:"10",height:"10",fill:"var(--sunk)"},pat);el("line",{x1:"0",y1:"0",x2:"0",y2:"10",stroke:"var(--rule)","stroke-width":"4"},pat);
-  el("rect",{width:"1000",height:"560",fill:"var(--paper)"});
-  // Humble Camp Rd
-  el("rect",{x:"0",y:"505",width:"1000",height:"34",fill:"var(--road)"});
-  el("text",{x:"20",y:"528","font-family":"IBM Plex Mono, monospace","font-size":"13",fill:"var(--ink)","letter-spacing":"2"}).textContent="HUMBLE CAMP RD";
-  // phase 2
-  el("rect",{x:"20",y:"40",width:"370",height:"440",fill:"url(#hatch)",stroke:"var(--ink-3)","stroke-dasharray":"6 5",rx:"4"});
+  const defs=el("defs",{});
+  const pat=el("pattern",{id:"hatch",width:"10",height:"10",patternUnits:"userSpaceOnUse",patternTransform:"rotate(45)"},defs);
+  el("rect",{width:"10",height:"10",fill:"var(--sunk)"},pat);
+  el("line",{x1:"0",y1:"0",x2:"0",y2:"10",stroke:"var(--rule)","stroke-width":"4"},pat);
+  el("rect",{width:"1000",height:"660",fill:"var(--paper)"});
+
+  const X0=85, W=94, PARK_L=60, PARK_R=960;
+
+  // Phase 2 — the undeveloped 3 acres directly behind (north of) the existing park
+  el("rect",{x:PARK_L,y:"20",width:PARK_R-PARK_L,height:"180",fill:"url(#hatch)",stroke:"var(--ink-3)","stroke-dasharray":"6 5",rx:"4"});
   const p2=el("g",{"font-family":"Barlow Condensed, sans-serif",fill:"var(--ink)"});
-  el("rect",{x:"70",y:"200",width:"270",height:"110",fill:"var(--paper)",rx:"3"},p2);
-  el("text",{x:"205",y:"240","text-anchor":"middle","font-size":"30","font-weight":"700"},p2).textContent="PHASE 2 · 41 LOTS";
-  el("text",{x:"205",y:"266","text-anchor":"middle","font-size":"13","font-family":"IBM Plex Mono, monospace",fill:"var(--ink-2)"},p2).textContent="3 acres · planned";
-  el("text",{x:"205",y:"290","text-anchor":"middle","font-size":"12","font-family":"IBM Plex Mono, monospace",fill:"var(--ink-2)"},p2).textContent="play area · dog park · rec area";
-  el("rect",{x:"160",y:"480",width:"40",height:"25",fill:"url(#hatch)"});
-  // loop road
-  el("rect",{x:"450",y:"60",width:"510",height:"410",fill:"none",stroke:"var(--road)","stroke-width":"26",rx:"30"});
-  el("rect",{x:"690",y:"470",width:"46",height:"36",fill:"var(--road)"});
-  el("text",{x:"713",y:"495","text-anchor":"middle","font-family":"IBM Plex Mono, monospace","font-size":"11",fill:"var(--ink)"}).textContent="ENTRY";
-  // trees
-  [[560,352],[600,172],[790,356],[880,172],[700,352]].forEach(([x,y])=>el("circle",{cx:x,cy:y,r:"16",fill:"var(--ok)",opacity:".22"}));
-  // lots
-  const rows=[{n:9,y:88,h:66,x0:472,w:52},{n:8,y:196,h:60,x0:497,w:52},{n:8,y:260,h:60,x0:497,w:52},{n:9,y:384,h:66,x0:472,w:52}];
+  el("rect",{x:"250",y:"62",width:"520",height:"96",fill:"var(--paper)",rx:"3"},p2);
+  el("text",{x:"510",y:"100","text-anchor":"middle","font-size":"30","font-weight":"700"},p2).textContent="PHASE 2 · 41 LOTS";
+  el("text",{x:"510",y:"124","text-anchor":"middle","font-size":"13","font-family":"IBM Plex Mono, monospace",fill:"var(--ink-2)"},p2).textContent="3 acres behind the park · planned";
+  el("text",{x:"510",y:"146","text-anchor":"middle","font-size":"12","font-family":"IBM Plex Mono, monospace",fill:"var(--ink-2)"},p2).textContent="play area · dog park · rec area · new roads";
+
+  // existing park boundary
+  el("rect",{x:PARK_L,y:"215",width:PARK_R-PARK_L,height:"385",fill:"none",stroke:"var(--ink-3)","stroke-width":"2",rx:"3"});
+  el("text",{x:"510",y:"207","text-anchor":"middle","font-family":"Barlow Condensed, sans-serif","font-size":"20","font-weight":"700",fill:"var(--ink)","letter-spacing":"1"}).textContent="VAQUERO RV PARK · 34 LOTS";
+
+  const rows=[
+    {y:258, h:58, cells:["shed",33,32,31,30,29,28,27,null]},
+    {y:348, h:58, cells:[26,25,24,23.5,23,22,21,20,19]},
+    {y:424, h:58, cells:[18,17,16,15,14,13,12,11,10]},
+    {y:512, h:58, cells:[9,8,7,6,5,4,3,2,1]}
+  ];
+  // drive aisles between the rows
+  [[316,32],[406,18],[482,30],[570,30]].forEach(([y,h])=>
+    el("rect",{x:PARK_L+6,y,width:PARK_R-PARK_L-12,height:h,fill:"var(--road)",opacity:".55"}));
+
+  // dumpster, north-east corner
+  el("rect",{x:X0+8*W,y:"222",width:W-6,height:"28",rx:"2",fill:"var(--occ-soft)",stroke:"var(--rule)"});
+  el("text",{x:X0+8*W+(W-6)/2,y:"241","text-anchor":"middle","font-family":"IBM Plex Mono, monospace","font-size":"13",fill:"var(--ink-2)"}).textContent="DUMPSTER";
+
+  // trees, roughly where the drone shots show them
+  [[300,338],[640,338],[430,500],[760,500],[880,414]].forEach(([x,y])=>
+    el("circle",{cx:x,cy:y,r:"15",fill:"var(--ok)",opacity:".2"}));
+
   const fill={available:"var(--ok)",pending:"var(--warn)",occupied:"var(--lot-occ)"};
-  let id=1;
-  rows.forEach(r=>{for(let i=0;i<r.n;i++,id++){
-    const l=LOTS[id-1], g=el("g",{class:"lotrect",tabindex:"0",role:"button","aria-label":`Lot ${l.id}, ${STATUS[l.status]}`});
-    el("rect",{x:r.x0+i*r.w+2,y:r.y,width:r.w-4,height:r.h,rx:"2",fill:fill[l.status],stroke:"var(--paper)","stroke-width":"1"},g);
-    el("text",{x:r.x0+i*r.w+r.w/2,y:r.y+r.h/2+1,"text-anchor":"middle","dominant-baseline":"middle",class:"lotlbl","font-family":"IBM Plex Mono, monospace","font-weight":"500",
+  rows.forEach(r=>r.cells.forEach((cell,i)=>{
+    if(cell===null) return;
+    const x=X0+i*W;
+    if(cell==="shed"){
+      el("rect",{x:x+2,y:r.y,width:W-6,height:r.h,rx:"2",fill:"var(--occ-soft)",stroke:"var(--rule)"});
+      el("text",{x:x+W/2,y:r.y+r.h/2+1,"text-anchor":"middle","dominant-baseline":"middle",class:"lotlbl",
+        "font-family":"IBM Plex Mono, monospace",fill:"var(--ink-2)"}).textContent="SHED";
+      return;
+    }
+    const l=LOTS.find(z=>z.id===cell); if(!l) return;
+    const g=el("g",{class:"lotrect",tabindex:"0",role:"button","aria-label":`Lot ${lotNo(l.id)}, ${STATUS[l.status]}`});
+    el("rect",{x:x+2,y:r.y,width:W-6,height:r.h,rx:"2",fill:fill[l.status],stroke:"var(--paper)","stroke-width":"1"},g);
+    el("text",{x:x+W/2,y:r.y+r.h/2+1,"text-anchor":"middle","dominant-baseline":"middle",class:"lotlbl",
+      "font-family":"IBM Plex Mono, monospace","font-weight":"500",
       fill:l.status==="occupied"?"var(--ink-2)":"var(--paper)"},g).textContent=lotNo(l.id);
     g.addEventListener("click",()=>openLot(l.id));
     g.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();openLot(l.id)}});
-  }});
-  el("text",{x:"705",y:"40","text-anchor":"middle","font-family":"Barlow Condensed, sans-serif","font-size":"20","font-weight":"700",fill:"var(--ink)","letter-spacing":"1"}).textContent="VAQUERO RV PARK · 34 LOTS";
-  // phones: zoom to the 34 existing lots so each one is big enough to tap
+  }));
+
+  // Humble Camp Rd runs along the front of the park
+  el("rect",{x:"0",y:"608",width:"1000",height:"36",fill:"var(--road)"});
+  el("text",{x:"20",y:"631","font-family":"IBM Plex Mono, monospace","font-size":"13",fill:"var(--ink)","letter-spacing":"2"}).textContent="HUMBLE CAMP RD";
+  el("rect",{x:"860",y:"600",width:"54",height:"10",fill:"var(--road)"});
+  el("text",{x:"887",y:"594","text-anchor":"middle","font-family":"IBM Plex Mono, monospace","font-size":"11",fill:"var(--ink-2)"}).textContent="ENTRY";
+
+  // phones: drop the Phase 2 band so the 34 lots stay big enough to tap
   const mq=matchMedia("(max-width:640px)");
-  const fit=()=>svg.setAttribute("viewBox",mq.matches?"428 22 552 520":"0 0 1000 560");
+  const fit=()=>svg.setAttribute("viewBox",mq.matches?"55 200 915 450":"0 0 1000 660");
   fit(); mq.addEventListener?mq.addEventListener("change",fit):mq.addListener(fit);
+
   const c=s=>LOTS.filter(l=>l.status===s).length;
   $("#tally").innerHTML=`<div><b class="num" style="color:var(--ok)">${c("available")}</b><span>Available</span></div><div><b class="num" style="color:var(--warn)">${c("pending")}</b><span>Pending</span></div><div><b class="num">${occPct}%</b><span>Occupied</span></div>`;
 })();
@@ -988,7 +1024,7 @@ $("#inq").onsubmit=async e=>{
     if(/where|address|locat|direction|heb|h-e-b|walmart|bank|store/.test(q)) return `We're at <b>772 Humble Camp Rd, Pleasanton, TX 78064</b>, about 5 minutes from H-E-B and Wells Fargo on Oaklawn Rd and 40 minutes from San Antonio.<br><a class="inline" href="#location">See location →</a>`;
     if(/wifi|wi-fi|internet|secur|camera|safe|gate/.test(q)) return `Free Wi-Fi covers the park and 24-hour camera surveillance is active. Security gates are coming soon.`;
     if(/night|week|short|weekend|daily/.test(q)) return `We focus on monthly, long-term residents, so we don't offer nightly or weekend stays.`;
-    if(/expan|phase|new lot|playground|kids|play/.test(q)) return `Phase 2 adds 41 lots on 3 acres next door, plus new roads, a kids play area, a dog park and a recreation area.<br><a class="inline" href="#phase2">Read the plan →</a>`;
+    if(/expan|phase|new lot|playground|kids|play/.test(q)) return `Phase 2 adds 41 lots on the 3 acres directly behind the park, plus new roads, a kids play area, a dog park and a recreation area.<br><a class="inline" href="#phase2">Read the plan →</a>`;
     if(/rv|mobile|trailer|amp|50|30/.test(q)) return `We rent RV lots (30 or 50 amp), park-owned RVs, park-owned tiny homes, and a few rent-to-own homes.`;
     return `Good question. I'll pass it along. For a fast answer, call or text <a href="${SITE.phoneHref}">${SITE.phone}</a> or email <a href="mailto:${SITE.email}">${SITE.email}</a>.`;
   }
