@@ -9,7 +9,7 @@
 #   dist/photos/                             copied photos
 #   dist/robots.txt, dist/sitemap.xml        search-engine files
 #   Vaquero-RV-Park-Website-Prototype.html   one self-contained file, for emailing
-use strict; use warnings; use MIME::Base64; use File::Path qw(make_path); use File::Copy qw(copy);
+use strict; use warnings; use MIME::Base64; use File::Path qw(make_path); use File::Copy qw(copy); use JSON::PP;
 
 my $SITE_URL = $ENV{SITE_URL} || 'https://vaquerorvpark.com';
 $SITE_URL =~ s{/$}{};
@@ -123,7 +123,7 @@ my $LPCSS = <<'CSS';
 </style>
 CSS
 
-my $LDBIZ = qq{"\@type":"RVPark","name":"Vaquero RV Park","url":"$SITE_URL/","telephone":"+1-830-480-2590"};
+my $LDBIZ = { '@type' => 'RVPark', name => 'Vaquero RV Park', url => "$SITE_URL/", telephone => '+1-830-480-2590' };
 
 # {{TOKENS}} a page may use; every fact comes from the parsed site data above
 sub lotcards {
@@ -163,9 +163,13 @@ sub render_page {
   my $body = fill($pg->{body}, $base);
   my ($title, $desc) = map { fill($pg->{$_}, $base) } qw(title description);  # titles may use {{RENT:...}}
   my $guides = join '', map { qq{<li><a href="$base$_->{slug}/">} . h($_->{crumb}) . '</a></li>' } @live;
-  my $ld = qq{<script type="application/ld+json">{"\@context":"https://schema.org","\@graph":[{$LDBIZ},}
-         . qq{{"\@type":"BreadcrumbList","itemListElement":[{"\@type":"ListItem","position":1,"name":"Vaquero RV Park","item":"$SITE_URL/"},}
-         . qq{{"\@type":"ListItem","position":2,"name":"} . j($pg->{crumb}) . qq{","item":"$canon"}]}]}</script>};
+  # built as data and encoded, so the JSON is always valid (hand-quoted braces broke it once)
+  my $ld = '<script type="application/ld+json">' . JSON::PP->new->canonical->encode({
+    '@context' => 'https://schema.org',
+    '@graph'   => [ $LDBIZ, { '@type' => 'BreadcrumbList', itemListElement => [
+      { '@type' => 'ListItem', position => 1, name => 'Vaquero RV Park', item => "$SITE_URL/" },
+      { '@type' => 'ListItem', position => 2, name => $pg->{crumb}, item => $canon } ] } ],
+  }) . '</script>';
   my $faq = $pg->{body} =~ /\{\{FAQ\}\}/ ? $faqld : '';
   return <<"HTML";
 <!doctype html>
@@ -245,6 +249,14 @@ for my $pg (@live) {
   # live links point at "/" itself: Cloudflare redirects /index.html to /, and redirects waste crawl
   (my $html = render_page($pg, '/', "$SITE_URL/$pg->{slug}/")) =~ s{href="/index\.html}{href="/}g;
   print $o $html; close $o;
+}
+# every structured-data block must parse, or Google ignores it: stop the build instead
+for my $f ('dist/index.html', map { "dist/$_->{slug}/index.html" } @live) {
+  open my $i, '<:raw', $f or die "$f: $!"; my $html = do { local $/; <$i> }; close $i;
+  while ($html =~ m{<script type="application/ld\+json">(.*?)</script>}sg) {
+    my $json = $1;
+    eval { JSON::PP->new->decode($json); 1 } or die "$f: invalid JSON-LD: $@";
+  }
 }
 # previews of every page (drafts included) that open from disk: preview/<slug>.html
 make_path('preview');
