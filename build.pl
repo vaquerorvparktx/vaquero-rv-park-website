@@ -242,7 +242,9 @@ close $out;
 for my $pg (@live) {
   make_path("dist/$pg->{slug}");
   open my $o, '>:raw', "dist/$pg->{slug}/index.html" or die $!;
-  print $o render_page($pg, '/', "$SITE_URL/$pg->{slug}/"); close $o;
+  # live links point at "/" itself: Cloudflare redirects /index.html to /, and redirects waste crawl
+  (my $html = render_page($pg, '/', "$SITE_URL/$pg->{slug}/")) =~ s{href="/index\.html}{href="/}g;
+  print $o $html; close $o;
 }
 # previews of every page (drafts included) that open from disk: preview/<slug>.html
 make_path('preview');
