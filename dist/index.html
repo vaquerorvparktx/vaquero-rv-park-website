@@ -27,7 +27,8 @@
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"RVPark","name":"Vaquero RV Park","telephone":"+1-830-480-2590","email":"vaquerorvparktx@gmail.com",
 "address":{"@type":"PostalAddress","streetAddress":"772 Humble Camp Rd","addressLocality":"Pleasanton","addressRegion":"TX","postalCode":"78064","addressCountry":"US"},
-"sameAs":["https://www.facebook.com/profile.php?id=61590798300769"],"petsAllowed":true,
+"geo":{"@type":"GeoCoordinates","latitude":28.9498,"longitude":-98.4861},
+"sameAs":["https://www.facebook.com/profile.php?id=61590798300769"],"priceRange":"From $400/month","petsAllowed":true,
 "amenityFeature":[{"@type":"LocationFeatureSpecification","name":"Free Wi-Fi","value":true},{"@type":"LocationFeatureSpecification","name":"24-hour surveillance","value":true}]}
 </script>
 <style>
@@ -125,8 +126,8 @@ header.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;backgroun
 .hero-in{position:relative;z-index:1;padding-block:clamp(110px,20vw,220px) 40px;display:grid;gap:20px}
 .hero .kicker{font:500 .8rem/1.2 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:#E9CFA1;display:flex;align-items:center;gap:.6rem}
 .hero .kicker::before{content:"★";color:#C9A227}
-.hero h1{font-size:clamp(2.3rem,6.2vw,4.5rem);text-transform:uppercase;max-width:15ch;line-height:1.02}
-.hero h1 em{font:italic 400 .88em/1 var(--serif);text-transform:none;color:#EFC97D;letter-spacing:-.01em}
+.hero .slogan{font-family:var(--slab);font-weight:700;margin:0;text-wrap:balance;letter-spacing:.005em;font-size:clamp(2.3rem,6.2vw,4.5rem);text-transform:uppercase;max-width:15ch;line-height:1.02}
+.hero .slogan em{font:italic 400 .88em/1 var(--serif);text-transform:none;color:#EFC97D;letter-spacing:-.01em}
 .hero .seal{position:absolute;inset:auto;left:auto;bottom:auto;right:clamp(16px,4vw,48px);top:clamp(70px,9vw,104px);width:clamp(120px,13vw,190px);height:auto;object-fit:contain;z-index:1;filter:drop-shadow(0 10px 24px rgba(0,0,0,.45));pointer-events:none}
 @media (max-width:900px){.hero .seal{width:96px;top:64px;right:16px;opacity:.95}}
 @media (max-width:700px){.hero .seal{display:none}}
@@ -451,8 +452,8 @@ dialog{overflow:auto;overscroll-behavior:contain}
   <img src="photos/aerial-hero.jpg" alt="Aerial view of Vaquero RV Park lots and loop road on Humble Camp Rd, Pleasanton TX">
   <img class="seal" src="photos/seal.webp" alt="" aria-hidden="true">
   <div class="wrap hero-in">
-    <p class="kicker">772 Humble Camp Rd · Pleasanton, Texas</p>
-    <h1>Put down roots where the <em>cowboy</em> was born</h1>
+    <h1 class="kicker">Monthly RV lots &amp; RV rentals · Pleasanton, Texas</h1>
+    <p class="slogan">Put down roots where the <em>cowboy</em> was born</p>
     <p class="sub">Monthly RV lots, park-owned RVs and tiny homes, made for people who live here. Not a weekend stopover. Quiet, secure, and five minutes from H-E-B.</p>
     <div class="ctas">
       <a class="btn btn-primary" href="#lots">See open lots</a>
@@ -489,7 +490,7 @@ dialog{overflow:auto;overscroll-behavior:contain}
       <span id="statuschips" style="display:contents"></span>
       <select id="typefilter" aria-label="Rental type"></select>
     </div>
-    <div class="lots" id="lotgrid"></div>
+    <div class="lots" id="lotgrid"><button class="lot is-available" type="button" data-lot="10" aria-label="Lot 10, Available, Park-owned RV"><div class="ph"><img loading="lazy" src="photos/lot10-1.jpg" alt="Lot 10, Park-owned RV at Vaquero RV Park in Pleasanton, TX" style="object-position:50% 50%"><span class="badge available">Available</span></div><div class="body"><div class="row"><span class="no num"><small>LOT</small>10</span><span class="rent num">$725<small>/mo</small></span></div><span class="type">Park-owned RV</span><span class="dep num">Deposit $550</span></div></button><button class="lot is-available" type="button" data-lot="21" aria-label="Lot 21, Available, Park-owned RV"><div class="ph"><img loading="lazy" src="photos/lot21-1.jpg" alt="Lot 21, Park-owned RV at Vaquero RV Park in Pleasanton, TX" style="object-position:50% 50%"><span class="badge available">Available</span></div><div class="body"><div class="row"><span class="no num"><small>LOT</small>21</span><span class="rent num">$800<small>/mo</small></span></div><span class="type">Park-owned RV</span><span class="dep num">Deposit $550</span></div></button></div>
   </div>
 </section>
 
@@ -855,7 +856,7 @@ function renderLots(){
   const list=LOTS.filter(l=>(fStatus==="all"||l.status===fStatus)&&(fType==="all"||l.type===fType));
   $("#lotgrid").innerHTML=list.length?list.map(l=>`
     <button class="lot is-${l.status}" type="button" data-lot="${l.id}" aria-label="Lot ${l.id}, ${STATUS[l.status]}, ${esc(typeName(l.type))}">
-      <div class="ph"><img loading="lazy" src="${l.photos[0]}" alt="" style="object-position:${l.focus}"><span class="badge ${l.status}">${STATUS[l.status]}</span></div>
+      <div class="ph"><img loading="lazy" src="${l.photos[0]}" alt="Lot ${l.id}, ${esc(typeName(l.type))} at Vaquero RV Park in Pleasanton, TX" style="object-position:${l.focus}"><span class="badge ${l.status}">${STATUS[l.status]}</span></div>
       <div class="body">
         <div class="row"><span class="no num"><small>LOT</small>${lotNo(l.id)}</span>${l.rent!=null?`<span class="rent num">${money(l.rent)}<small>/mo</small></span>`:""}</div>
         <span class="type">${esc(typeName(l.type))}</span>

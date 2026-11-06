@@ -234,6 +234,21 @@ $prod =~ s{<meta name="description" content=".*?">}{<meta name="description" con
 my $pbody = $body;
 # the FAQ is in the HTML itself, so search engines read it without running the script
 $pbody =~ s{<div id="faqlist"></div>}{<div id="faqlist">$faqhtml</div>} or die "#faqlist placeholder not found";
+# open lots in the HTML too (same markup the script draws with its default "Available" filter), so
+# crawlers that don't run JavaScript (Bing, AI search) still see them; the script redraws on load
+my $homecards = join '', map {
+  my $l = $_; my $tn = h($type{$l->{type}}{name} // $l->{type});
+  my $img = $l->{ph} ? "photos/lot$l->{id}-1.jpg" : 'photos/aerial-front.jpg';
+  my $no = $l->{id} =~ /^\d$/ ? "0$l->{id}" : $l->{id};
+  qq{<button class="lot is-available" type="button" data-lot="$l->{id}" aria-label="Lot $l->{id}, Available, $tn">}
+  . qq{<div class="ph"><img loading="lazy" src="$img" alt="Lot $l->{id}, $tn at Vaquero RV Park in Pleasanton, TX" style="object-position:50% 50%"><span class="badge available">Available</span></div>}
+  . qq{<div class="body"><div class="row"><span class="no num"><small>LOT</small>$no</span><span class="rent num">} . money($l->{rent}) . qq{<small>/mo</small></span></div>}
+  . qq{<span class="type">$tn</span><span class="dep num">Deposit } . money($l->{deposit}) . qq{</span></div></button>}
+} grep { $_->{status} eq 'available' } @open;
+$pbody =~ s{<div class="lots" id="lotgrid"></div>}{<div class="lots" id="lotgrid">$homecards</div>} or die "#lotgrid placeholder not found";
+# priceRange from the lowest listed rent, so it follows the rent roll like every other fact
+my ($minrent) = sort { $a <=> $b } grep { defined } map { $type{$_}{rent} } @types;
+$prod =~ s{"petsAllowed":true,}{"priceRange":"From @{[money($minrent)]}/month","petsAllowed":true,} or die "home JSON-LD petsAllowed not found";
 if (@live) {
   my $g = join '', map { qq{<li><a href="/$_->{slug}/">} . h($_->{crumb}) . '</a></li>' } @live;
   $pbody =~ s{(<div><h4>Park</h4>.*?</div>)}{$1\n      <div><h4>Guides</h4><ul>$g</ul></div>}s or die "footer Park column not found";
