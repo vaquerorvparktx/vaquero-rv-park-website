@@ -7,6 +7,7 @@
 {"@context":"https://schema.org","@type":"RVPark","name":"Vaquero RV Park","telephone":"+1-830-480-2590","email":"vaquerorvparktx@gmail.com",
 "address":{"@type":"PostalAddress","streetAddress":"772 Humble Camp Rd","addressLocality":"Pleasanton","addressRegion":"TX","postalCode":"78064","addressCountry":"US"},
 "geo":{"@type":"GeoCoordinates","latitude":28.94944,"longitude":-98.48681},
+"hasMap":"https://www.google.com/maps?cid=8498488223138810579",
 "sameAs":["https://www.facebook.com/profile.php?id=61590798300769"],"petsAllowed":true,
 "amenityFeature":[{"@type":"LocationFeatureSpecification","name":"Free Wi-Fi","value":true},{"@type":"LocationFeatureSpecification","name":"24-hour surveillance","value":true}]}
 </script>
@@ -111,6 +112,7 @@ header.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;backgroun
 @media (max-width:900px){.hero .seal{width:96px;top:64px;right:16px;opacity:.95}}
 @media (max-width:700px){.hero .seal{display:none}}
 .hero p.sub{max-width:52ch;font-size:1.12rem;color:#E5E1D8}
+.hero p.sub a{color:inherit;text-decoration:underline;text-underline-offset:3px}
 .hero .ctas{display:flex;flex-wrap:wrap;gap:12px}
 .hero .btn-primary{background:#F2EEE5;color:#1E2321}
 .facts{position:relative;z-index:1;border-top:1px solid rgba(255,255,255,.2);background:rgba(14,18,16,.55);backdrop-filter:blur(6px)}
@@ -428,13 +430,14 @@ dialog{overflow:auto;overscroll-behavior:contain}
   <img src="photos/aerial-hero.jpg" alt="Aerial view of Vaquero RV Park lots and loop road on Humble Camp Rd, Pleasanton TX">
   <img class="seal" src="photos/seal.webp" alt="" aria-hidden="true">
   <div class="wrap hero-in">
-    <h1 class="kicker">Monthly RV lots &amp; RV rentals · Pleasanton, Texas</h1>
+    <h1 class="kicker">RV park in Pleasanton, Texas · Monthly lots &amp; RV rentals</h1>
     <p class="slogan">Put down roots where the <em>cowboy</em> was born</p>
-    <p class="sub">Monthly RV lots, park-owned RVs and tiny homes, made for people who live here. Not a weekend stopover. Quiet, secure, and five minutes from H-E-B.</p>
+    <p class="sub">Vaquero is a long-term RV park at 772 Humble Camp Rd in Pleasanton, Texas. Monthly lots, park-owned RVs and tiny homes. Not a weekend stopover. Quiet, secure, and five minutes from H-E-B.</p>
     <div class="ctas">
       <a class="btn btn-primary" href="#lots">See open lots</a>
       <a class="btn btn-line" href="#apply" data-apply>Send an inquiry</a>
     </div>
+    <p class="sub">Got a rig? See our <a href="/monthly-rv-lots-pleasanton-tx/">monthly RV lots in Pleasanton</a>. No rig? See our <a href="/rv-rentals-pleasanton-tx/">furnished RV rentals in Pleasanton</a>.</p>
   </div>
   <div class="facts"><ul class="wrap" id="facts"></ul></div>
 </section>
@@ -761,7 +764,8 @@ const SITE = {
     ["How much is rent?", "RV lots are $400 per month (30-amp) or $500 per month (50-amp). Park-owned RVs and tiny homes cost more and vary by unit. Each open lot lists its own rent and deposit."],
     ["Are pets allowed?", "Yes, cats and small dogs are welcome. A fenced dog park is coming with our Phase 2 expansion."],
     ["How do I apply?", "Send us the inquiry form or call or text us. We'll follow up about the lot you want. Approved residents pay rent and send maintenance requests through the resident portal."],
-    ["Is there internet?", "Yes. Free Wi-Fi covers the park, and 24-hour camera surveillance is active."]
+    ["Is there internet?", "Yes. Free Wi-Fi covers the park, and 24-hour camera surveillance is active."],
+    ["Where is Vaquero RV Park?", "772 Humble Camp Rd, Pleasanton, Texas 78064, in Atascosa County. Call or text (830) 480-2590 to set up a showing."]
   ]
 };
 

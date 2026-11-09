@@ -13,7 +13,7 @@ use strict; use warnings; use MIME::Base64; use File::Path qw(make_path); use Fi
 
 my $SITE_URL = $ENV{SITE_URL} || 'https://vaquerorvpark.com';
 $SITE_URL =~ s{/$}{};
-my $TITLE = 'Vaquero RV Park | Monthly RV Lots &amp; Park-Owned RVs in Pleasanton, TX';
+my $TITLE = 'Vaquero RV Park in Pleasanton, TX | Monthly RV Lots &amp; Rentals';
 my $DESC  = 'Long-term RV lots, park-owned RVs and tiny homes in Pleasanton, Texas. '
           . 'Lots from $400/month, free Wi-Fi, 24-hour surveillance, cats and small dogs welcome. Minutes from H-E-B.';
 
@@ -123,7 +123,11 @@ my $LPCSS = <<'CSS';
 </style>
 CSS
 
-my $LDBIZ = { '@type' => 'RVPark', name => 'Vaquero RV Park', url => "$SITE_URL/", telephone => '+1-830-480-2590' };
+my $LDBIZ = { '@type' => 'RVPark', name => 'Vaquero RV Park', url => "$SITE_URL/", telephone => '+1-830-480-2590',
+  address => { '@type' => 'PostalAddress', streetAddress => '772 Humble Camp Rd', addressLocality => 'Pleasanton',
+               addressRegion => 'TX', postalCode => '78064', addressCountry => 'US' },
+  hasMap => 'https://www.google.com/maps?cid=8498488223138810579',
+  sameAs => ['https://www.facebook.com/profile.php?id=61590798300769'] };
 
 # {{TOKENS}} a page may use; every fact comes from the parsed site data above
 sub lotcards {
