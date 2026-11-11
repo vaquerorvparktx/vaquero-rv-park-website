@@ -98,6 +98,27 @@ if (opendir my $pd, 'pages') {
 }
 my @live = grep { $_->{status} eq 'live' } @pages;
 
+# --- blog: blog/<slug>.html -> dist/blog/<slug>/index.html, plus dist/blog/index.html ----------
+# Same <!-- key: value --> header as pages, plus date: YYYY-MM-DD. Newest first.
+my @posts;
+if (opendir my $bd, 'blog') {
+  for my $f (sort grep { /\.html$/ } readdir $bd) {
+    open my $p, '<:raw', "blog/$f" or die "blog/$f: $!";
+    my $txt = do { local $/; <$p> }; close $p;
+    my %m; $m{lc $1} = $2 while $txt =~ s{\A\s*<!--\s*(\w+):\s*(.*?)\s*-->\s*}{}s;
+    $m{$_} or die "blog/$f: missing <!-- $_: -->" for qw(title description crumb status date);
+    $m{status} =~ /^(draft|live)$/ or die "blog/$f: status must be draft or live";
+    $m{date} =~ /^\d{4}-\d\d-\d\d$/ or die "blog/$f: date must be YYYY-MM-DD";
+    (my $slug = $f) =~ s/\.html$//;
+    push @posts, { %m, slug => "blog/$slug", body => $txt, parent => ['Blog', 'blog/'] };
+  }
+  closedir $bd;
+}
+@posts = sort { $b->{date} cmp $a->{date} } @posts;
+my @liveposts = grep { $_->{status} eq 'live' } @posts;
+sub nicedate { my @m = qw(January February March April May June July August September October November December);
+  my ($y, $mo, $d) = split /-/, shift; "$m[$mo-1] " . ($d+0) . ", $y" }
+
 my ($STYLE) = $head =~ m{(<style>.*</style>)}s;
 my $FONTS = join "\n", $head =~ m{(<link rel="(?:preconnect|stylesheet)"[^>]*>)}g;
 my $LPCSS = <<'CSS';
@@ -119,6 +140,8 @@ my $LPCSS = <<'CSS';
 .lp-lot .feat{display:flex;flex-wrap:wrap;gap:6px;list-style:none;padding:0;margin:.9em 0 1.1em}
 .lp-lot .feat li{font:500 .78rem/1 var(--mono);padding:6px 8px;background:var(--sunk);border-radius:3px;margin:0}
 .lp details{border-bottom:1px solid var(--rule);padding:12px 0;max-width:760px}.lp summary{font-weight:600;cursor:pointer}.lp details p{margin-top:.5em}
+.lp .postlist{list-style:none;padding:0;max-width:760px}.lp .postlist li{padding:16px 0;border-bottom:1px solid var(--rule);margin:0}
+.lp .postlist b{font-size:1.25rem}.lp .postlist small{font:400 .8rem/1.4 var(--mono);color:var(--ink-3)}
 @media (max-width:720px){.lp-lot{grid-template-columns:1fr}}
 </style>
 CSS
@@ -168,12 +191,20 @@ sub render_page {
   my ($title, $desc) = map { fill($pg->{$_}, $base) } qw(title description);  # titles may use {{RENT:...}}
   my $guides = join '', map { qq{<li><a href="$base$_->{slug}/">} . h($_->{crumb}) . '</a></li>' } @live;
   # built as data and encoded, so the JSON is always valid (hand-quoted braces broke it once)
+  my @trail = ({ name => 'Vaquero RV Park', item => "$SITE_URL/" });
+  push @trail, { name => $pg->{parent}[0], item => "$SITE_URL/$pg->{parent}[1]" } if $pg->{parent};
+  push @trail, { name => $pg->{crumb}, item => $canon };
+  my @graph = ($LDBIZ, { '@type' => 'BreadcrumbList', itemListElement => [
+    map { { '@type' => 'ListItem', position => $_ + 1, %{$trail[$_]} } } 0 .. $#trail ] });
+  push @graph, { '@type' => 'BlogPosting', headline => $pg->{crumb}, description => $desc, datePublished => $pg->{date},
+    url => $canon, image => "$SITE_URL/photos/aerial-hero.jpg",
+    author => { '@type' => 'Organization', name => 'Vaquero RV Park' }, publisher => { '@type' => 'Organization', name => 'Vaquero RV Park' } }
+    if $pg->{date};
   my $ld = '<script type="application/ld+json">' . JSON::PP->new->canonical->encode({
-    '@context' => 'https://schema.org',
-    '@graph'   => [ $LDBIZ, { '@type' => 'BreadcrumbList', itemListElement => [
-      { '@type' => 'ListItem', position => 1, name => 'Vaquero RV Park', item => "$SITE_URL/" },
-      { '@type' => 'ListItem', position => 2, name => $pg->{crumb}, item => $canon } ] } ],
-  }) . '</script>';
+    '@context' => 'https://schema.org', '@graph' => \@graph }) . '</script>';
+  my $crumbs = qq{<a href="${base}index.html">Vaquero RV Park</a> › }
+    . ($pg->{parent} ? qq{<a href="$base$pg->{parent}[1]">} . h($pg->{parent}[0]) . '</a> › ' : '') . h($pg->{crumb});
+  my $dateline = $pg->{date} ? '<p class="kicker">' . nicedate($pg->{date}) . ' · Vaquero RV Park</p>' : '';
   my $faq = $pg->{body} =~ /\{\{FAQ\}\}/ ? $faqld : '';
   return <<"HTML";
 <!doctype html>
@@ -202,15 +233,15 @@ $faq</head>
     <a class="brand" href="${base}index.html" aria-label="Vaquero RV Park home">
       <img class="plate" src="${base}photos/logo-horizontal.webp" alt="Vaquero RV Park, Pleasanton, TX" width="420" height="85">
     </a>
-    <nav class="nav-links"><a href="${base}index.html#lots">Lots</a><a href="${base}index.html#rates">Rates</a><a href="${base}index.html#location">Location</a><a href="${base}index.html#faq">FAQ</a></nav>
+    <nav class="nav-links"><a href="${base}index.html#lots">Lots</a><a href="${base}index.html#rates">Rates</a><a href="${base}index.html#location">Location</a><a href="${base}index.html#faq">FAQ</a><a href="${base}blog/">Blog</a></nav>
     <a class="call" href="$TELHREF">$PHONE</a>
     <a class="btn btn-primary" href="${base}index.html#contact">Inquire</a>
   </div>
 </header>
 <main>
 <article class="lp"><div class="wrap">
-<p class="crumbs"><a href="${base}index.html">Vaquero RV Park</a> › @{[h($pg->{crumb})]}</p>
-$body
+<p class="crumbs">$crumbs</p>
+$dateline$body
 <p class="ctas"><a class="btn btn-primary" href="${base}index.html#contact">Ask about a lot</a> <a class="btn btn-line" href="$TELHREF">Call or text $PHONE</a></p>
 </div></article>
 </main>
@@ -258,6 +289,10 @@ if (@live) {
   $pbody =~ s{(<div><h4>Park</h4>.*?</div>)}{$1\n      <div><h4>Guides</h4><ul>$g</ul></div>}s or die "footer Park column not found";
   $prod .= "\n<style>\@media (min-width:761px){.foot{grid-template-columns:1.4fr 1fr 1fr 1fr}}</style>";
 }
+# latest blog posts in the "Life around Pleasanton" section (static, no script needed)
+my $bl = join '', map { qq{<li><a href="/$_->{slug}/">} . h($_->{crumb}) . '</a><small>' . nicedate($_->{date}) . '</small></li>' }
+  @liveposts[0 .. ($#liveposts < 2 ? $#liveposts : 2)];
+$pbody =~ s{<ul class="bloglist" id="bloglist"></ul>}{<ul class="bloglist" id="bloglist">$bl</ul>} or die "#bloglist placeholder not found";
 open my $out, '>:raw', 'dist/index.html' or die $!;
 print $out qq{<!doctype html>\n<html lang="en">\n<head>\n$meta$prod\n$faqld</head>\n<body>\n$pbody\n</body>\n</html>\n};
 close $out;
@@ -269,8 +304,21 @@ for my $pg (@live) {
   (my $html = render_page($pg, '/', "$SITE_URL/$pg->{slug}/")) =~ s{href="/index\.html}{href="/}g;
   print $o $html; close $o;
 }
+# blog: each live post, plus the index that lists them
+my $blogindex = { slug => 'blog', crumb => 'Blog',
+  title => 'Blog | Vaquero RV Park, Pleasanton, TX',
+  description => 'Notes from Vaquero RV Park on RV living, rent and life around Pleasanton and Atascosa County, Texas.',
+  body => qq{<p class="kicker">The Vaquero blog</p>\n<h1>Life around Pleasanton</h1>\n<p>Notes from the park on RV living, what it costs, and what there is to do in Pleasanton and Atascosa County.</p>\n}
+    . (@liveposts ? '<ul class="postlist">' . join('', map { qq{<li><a href="/$_->{slug}/"><b>} . h($_->{crumb}) . '</b></a><br><small>'
+        . nicedate($_->{date}) . '</small><br>' . h($_->{description}) . '</li>' } @liveposts) . '</ul>' : '<p>First post coming soon.</p>') };
+for my $pg (@liveposts, $blogindex) {
+  make_path("dist/$pg->{slug}");
+  open my $o, '>:raw', "dist/$pg->{slug}/index.html" or die $!;
+  (my $html = render_page($pg, '/', "$SITE_URL/$pg->{slug}/")) =~ s{href="/index\.html}{href="/}g;
+  print $o $html; close $o;
+}
 # every structured-data block must parse, or Google ignores it: stop the build instead
-for my $f ('dist/index.html', map { "dist/$_->{slug}/index.html" } @live) {
+for my $f ('dist/index.html', map { "dist/$_->{slug}/index.html" } @live, @liveposts, $blogindex) {
   open my $i, '<:raw', $f or die "$f: $!"; my $html = do { local $/; <$i> }; close $i;
   while ($html =~ m{<script type="application/ld\+json">(.*?)</script>}sg) {
     my $json = $1;
@@ -279,10 +327,11 @@ for my $f ('dist/index.html', map { "dist/$_->{slug}/index.html" } @live) {
 }
 # previews of every page (drafts included) that open from disk: preview/<slug>.html
 make_path('preview');
-for my $pg (@pages) {
+for my $pg (@pages, @posts) {
   my $html = render_page($pg, '../dist/', "$SITE_URL/$pg->{slug}/");
   $html =~ s{\.\./dist/([\w-]+)/"}{../preview/$1.html"}g;
-  open my $o, '>:raw', "preview/$pg->{slug}.html" or die $!; print $o $html; close $o;
+  (my $pf = $pg->{slug}) =~ s{/}{-}g;
+  open my $o, '>:raw', "preview/$pf.html" or die $!; print $o $html; close $o;
 }
 
 opendir my $dh, 'photos' or die $!;
@@ -298,7 +347,8 @@ my $today = sprintf('%04d-%02d-%02d', $yr+1900, $mon+1, $day);
 open my $s, '>:raw', 'dist/sitemap.xml' or die $!;
 print $s qq{<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n}
         . qq{  <url><loc>$SITE_URL/</loc><lastmod>$today</lastmod><changefreq>weekly</changefreq><priority>1.0</priority></url>\n}
-        . join('', map { qq{  <url><loc>$SITE_URL/$_->{slug}/</loc><lastmod>$today</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>\n} } @live)
+        . join('', map { qq{  <url><loc>$SITE_URL/$_->{slug}/</loc><lastmod>$today</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>\n} } @live, $blogindex)
+        . join('', map { qq{  <url><loc>$SITE_URL/$_->{slug}/</loc><lastmod>$_->{date}</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>\n} } @liveposts)
         . qq{</urlset>\n};
 close $s;
 

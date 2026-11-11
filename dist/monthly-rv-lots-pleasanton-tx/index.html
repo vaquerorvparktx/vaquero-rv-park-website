@@ -411,6 +411,9 @@ dialog{overflow:auto;overscroll-behavior:contain}
   .dlg-cta .btn{flex:1 1 100%;justify-content:center}
   .x{width:44px;height:44px;top:calc(10px + env(safe-area-inset-top,0px))}
 }
+.blogbox{margin-top:40px;padding-top:24px;border-top:1px solid var(--rule)}
+.bloglist{list-style:none;padding:0;margin:12px 0 18px}.bloglist li{padding:10px 0;border-bottom:1px solid var(--rule)}
+.bloglist a{font-weight:600;color:var(--ink)}.bloglist small{display:block;font:400 .8rem/1.4 var(--mono);color:var(--ink-3);margin-top:3px}
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:var(--ground);font:400 .82rem/1.4 var(--mono);padding:12px 16px;border-radius:4px;z-index:80;max-width:calc(100vw - 32px)}
 </style>
 <style>
@@ -431,6 +434,8 @@ dialog{overflow:auto;overscroll-behavior:contain}
 .lp-lot .feat{display:flex;flex-wrap:wrap;gap:6px;list-style:none;padding:0;margin:.9em 0 1.1em}
 .lp-lot .feat li{font:500 .78rem/1 var(--mono);padding:6px 8px;background:var(--sunk);border-radius:3px;margin:0}
 .lp details{border-bottom:1px solid var(--rule);padding:12px 0;max-width:760px}.lp summary{font-weight:600;cursor:pointer}.lp details p{margin-top:.5em}
+.lp .postlist{list-style:none;padding:0;max-width:760px}.lp .postlist li{padding:16px 0;border-bottom:1px solid var(--rule);margin:0}
+.lp .postlist b{font-size:1.25rem}.lp .postlist small{font:400 .8rem/1.4 var(--mono);color:var(--ink-3)}
 @media (max-width:720px){.lp-lot{grid-template-columns:1fr}}
 </style>
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"RVPark","address":{"@type":"PostalAddress","addressCountry":"US","addressLocality":"Pleasanton","addressRegion":"TX","postalCode":"78064","streetAddress":"772 Humble Camp Rd"},"hasMap":"https://www.google.com/maps?cid=8498488223138810579","name":"Vaquero RV Park","sameAs":["https://www.facebook.com/profile.php?id=61590798300769"],"telephone":"+1-830-480-2590","url":"https://vaquerorvpark.com/"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://vaquerorvpark.com/","name":"Vaquero RV Park","position":1},{"@type":"ListItem","item":"https://vaquerorvpark.com/monthly-rv-lots-pleasanton-tx/","name":"Monthly RV lots","position":2}]}]}</script>
@@ -442,7 +447,7 @@ dialog{overflow:auto;overscroll-behavior:contain}
     <a class="brand" href="/" aria-label="Vaquero RV Park home">
       <img class="plate" src="/photos/logo-horizontal.webp" alt="Vaquero RV Park, Pleasanton, TX" width="420" height="85">
     </a>
-    <nav class="nav-links"><a href="/#lots">Lots</a><a href="/#rates">Rates</a><a href="/#location">Location</a><a href="/#faq">FAQ</a></nav>
+    <nav class="nav-links"><a href="/#lots">Lots</a><a href="/#rates">Rates</a><a href="/#location">Location</a><a href="/#faq">FAQ</a><a href="/blog/">Blog</a></nav>
     <a class="call" href="tel:+18304802590">(830) 480-2590</a>
     <a class="btn btn-primary" href="/#contact">Inquire</a>
   </div>
