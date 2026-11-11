@@ -419,7 +419,7 @@ dialog{overflow:auto;overscroll-behavior:contain}
       <img class="plate" src="photos/logo-horizontal.webp" alt="Vaquero RV Park — premier long-term living, Pleasanton, TX" width="420" height="85">
     </a>
     <nav class="nav-links" id="navlinks">
-      <a href="#lots">Lots</a><a href="#map">Park map</a><a href="#rates">Rates</a><a href="#amenities">Amenities</a><a href="#location">Location</a><a href="#phase2">Expansion</a><a href="#faq">FAQ</a><a href="blog/">Blog</a>
+      <a href="#lots">Lots</a><a href="#map">Park map</a><a href="#rates">Rates</a><a href="#amenities">Amenities</a><a href="#location">Location</a><a href="#phase2">Expansion</a><a href="#faq">FAQ</a><a href="nearby-towns/">Nearby towns</a><a href="blog/">Blog</a>
     </nav>
     <a class="call" id="navcall" href="#"></a>
     <a class="btn btn-primary" href="#apply" data-apply>Inquire</a>
@@ -551,7 +551,7 @@ dialog{overflow:auto;overscroll-behavior:contain}
       <p class="eyebrow">Location</p>
       <h2>Everything you need, minutes away</h2>
       <address>772 Humble Camp Rd<br>Pleasanton, TX 78064</address>
-      <p class="lede">Groceries, banking, the pharmacy and Walmart are all a short drive down Oaklawn Rd. Downtown San Antonio is about 35 miles north, roughly 40 minutes via US-281 and I-37.</p>
+      <p class="lede">Groceries, banking, the pharmacy and Walmart are all a short drive down Oaklawn Rd. Downtown San Antonio is 37 miles north, about 41 minutes via I-37.</p>
       <div class="minimap">
         <svg viewBox="0 0 520 250" role="img" aria-label="Schematic of Vaquero RV Park relative to Oaklawn Rd shopping">
           <rect width="520" height="250" fill="var(--paper)"/>
@@ -577,7 +577,7 @@ dialog{overflow:auto;overscroll-behavior:contain}
     <div>
       <p class="eyebrow" style="margin-bottom:16px">Drive times from the park</p>
       <ul class="near" id="near"></ul>
-      <p class="note">Approximate drive times.</p>
+      <p class="note">Google Maps driving times from the park, checked <span id="nearchecked">November 11, 2026</span>, in typical traffic. <a href="nearby-towns/">Nearby towns →</a></p>
     </div>
   </div>
 </section>
@@ -749,13 +749,19 @@ const SITE = {
     { name: "Dog park", status: "soon", desc: "A fenced off-leash area, built with Phase 2.", icon: "bone" },
     { name: "Kids play area", status: "soon", desc: "A central playground, built with Phase 2.", icon: "play" }
   ],
+  // Driving times and distances from 772 Humble Camp Rd, checked on Google Maps 2026-11-11 (typical traffic).
+  // The single source for every drive time on the site: homepage list, /nearby-towns/, hero fact, chat.
+  nearbyChecked: "November 11, 2026",
   nearby: [
-    { name: "H-E-B", addr: "219 W Oaklawn Rd", min: 5 },
-    { name: "Wells Fargo Bank", addr: "425 W Oaklawn Rd", min: 5 },
-    { name: "Walmart Supercenter", addr: "2151 W Oaklawn Rd", min: 7 },
-    { name: "Longhorn Museum", addr: "1959 E State Hwy 97", min: 8 },
-    { name: "Downtown San Antonio", addr: "via US-281 N & I-37 N (~35 mi)", min: 40 },
-    { name: "Choke Canyon State Park", addr: "Calliham Unit", min: 55 }
+    { name: "Wells Fargo Bank", addr: "425 W Oaklawn Rd", mi: "1.0", min: 4 },
+    { name: "H-E-B", addr: "219 W Oaklawn Rd", mi: "0.9", min: 6 },
+    { name: "Longhorn Museum", addr: "1959 TX-97 E", mi: "2.6", min: 7 },
+    { name: "Walmart Supercenter", addr: "2151 W Oaklawn Rd", mi: "3.1", min: 8 },
+    { name: "Jourdanton", addr: "via TX-97 W", mi: "5.3", min: 11, town: "The Atascosa County seat, home to the courthouse and county offices." },
+    { name: "Poteet", addr: "via School Dr", mi: "8.9", min: 14, town: "Small farm town known for the Poteet Strawberry Festival every April." },
+    { name: "Floresville", addr: "via TX-97 E", mi: "24.9", min: 30, town: "The Wilson County seat, east of us along the San Antonio River." },
+    { name: "Downtown San Antonio", addr: "via I-37 N, to the Alamo", mi: "37.1", min: 41, town: "The River Walk, the Alamo, Spurs games and big-city shopping." },
+    { name: "Choke Canyon State Park", addr: "Calliham Unit, via I-37 S", mi: "52.8", min: 49 }
   ],
   todo: [
     { name: "Longhorn Museum", meta: "Pleasanton · Free admission", desc: "Wagons, ranch history and a Union Pacific caboose you can walk through, all tied to the town's cowboy roots." },
@@ -825,7 +831,7 @@ const avail=LOTS.filter(l=>l.status==="available");
 $("#announce").innerHTML=`${esc(SITE.announcement)}: <b>${avail.length} lots open</b> · lots from ${money(SITE.fromRent)}/mo · <a href="#lots">See lots →</a>`;
 const occPct=Math.round(LOTS.filter(l=>l.status==="occupied").length/LOTS.length*100);
 $("#facts").innerHTML=[
-  ["From "+money(SITE.fromRent),"Per month"],[avail.length+" open","Lots right now"],["Free","Park-wide Wi-Fi"],["24 / 7","Camera surveillance"],["5 min","To H-E-B"]
+  ["From "+money(SITE.fromRent),"Per month"],[avail.length+" open","Lots right now"],["Free","Park-wide Wi-Fi"],["24 / 7","Camera surveillance"],[SITE.nearby.find(n=>n.name==="H-E-B").min+" min","To H-E-B"]
 ].map(([b,s])=>`<li><b class="num">${b}</b><span>${s}</span></li>`).join("");
 
 /* ---------- lots grid ---------- */
@@ -981,7 +987,8 @@ const ICON={
 $("#amen").innerHTML=SITE.amenities.map(a=>`<div><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON[a.icon]}</svg>
   <h3>${esc(a.name)}</h3><p>${esc(a.desc)}</p><span class="st ${a.status}">${a.status==="live"?"Available now":"Coming soon"}</span></div>`).join("");
 const maxMin=Math.max(...SITE.nearby.map(n=>n.min));
-$("#near").innerHTML=SITE.nearby.map(n=>`<li><b>${esc(n.name)}</b><span class="t num">~${n.min} min</span><span class="addr">${esc(n.addr)}</span><span class="bar"><i style="width:${Math.max(6,n.min/maxMin*100)}%"></i></span></li>`).join("");
+function nb(name){ return SITE.nearby.find(n=>n.name===name); }
+$("#near").innerHTML=SITE.nearby.map(n=>`<li><b>${esc(n.name)}</b><span class="t num">~${n.min} min</span><span class="addr">${esc(n.addr)} · ${n.mi} mi</span><span class="bar"><i style="width:${Math.max(6,Math.round(n.min/maxMin*100))}%"></i></span></li>`).join("");
 $("#todolist").innerHTML=SITE.todo.map(t=>`<article><span class="meta">${esc(t.meta)}</span><h3>${esc(t.name)}</h3><p>${esc(t.desc)}</p></article>`).join("");
 $("#faqlist").innerHTML=SITE.faq.map(([q,a],i)=>`<details ${i===0?"open":""}><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join("");
 $("#gallery").innerHTML=[["propertyLine","Aerial view of the Vaquero RV Park property line and Phase 2 land, with nearby H-E-B, Wells Fargo, Sonic, Subway and Dairy Queen marked"],["hero","Aerial view of the park looking north across the lots and brush country"],["front","The loop road and lots seen from above Humble Camp Rd"],["high","High aerial of the park and the surrounding brush country"]]
@@ -1031,7 +1038,7 @@ $("#inq").onsubmit=async e=>{
     if(/rate|rent|price|cost|how much|\$|deposit/.test(q)) return `RV lots are <b>$400/month</b> (30 amp) or <b>$500/month</b> (50 amp). Park-owned RVs and tiny homes vary by unit, and open lots show their rent and $550 deposit.`+applyBtn;
     if(/pet|dog|cat/.test(q)) return `Cats and small dogs are welcome! A fenced dog park is coming with our Phase 2 expansion.`;
     if(/apply|application|move in|lease/.test(q)) return `Send us the inquiry form or call or text us. We will get back to you quickly.`+applyBtn;
-    if(/where|address|locat|direction|heb|h-e-b|walmart|bank|store/.test(q)) return `We're at <b>772 Humble Camp Rd, Pleasanton, TX 78064</b>, about 5 minutes from H-E-B and Wells Fargo on Oaklawn Rd and 40 minutes from San Antonio.<br><a class="inline" href="#location">See location →</a>`;
+    if(/where|address|locat|direction|heb|h-e-b|walmart|bank|store/.test(q)) return `We're at <b>772 Humble Camp Rd, Pleasanton, TX 78064</b>, about ${nb("H-E-B").min} minutes from H-E-B and ${nb("Wells Fargo Bank").min} from Wells Fargo on Oaklawn Rd, and ${nb("Downtown San Antonio").min} minutes from downtown San Antonio.<br><a class="inline" href="#location">See location →</a> · <a class="inline" href="nearby-towns/">Nearby towns →</a>`;
     if(/wifi|wi-fi|internet|secur|camera|safe|gate/.test(q)) return `Free Wi-Fi covers the park and 24-hour camera surveillance is active. Security gates are coming soon.`;
     if(/night|week|short|weekend|daily/.test(q)) return `We focus on monthly, long-term residents, so we don't offer nightly or weekend stays.`;
     if(/expan|phase|new lot|playground|kids|play/.test(q)) return `Phase 2 adds 41 lots on the 3 acres directly behind the park, plus new roads, a kids play area, a dog park and a recreation area.<br><a class="inline" href="#phase2">Read the plan →</a>`;

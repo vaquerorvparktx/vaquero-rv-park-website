@@ -73,6 +73,22 @@ for (split /\n/, $specblock) {
                 desc => $c[6], features => [ $c[7] =~ m{"([^"]*)"}g ] };
 }
 
+# drive times: SITE.nearby is the only source; the homepage list, /nearby-towns/ and the lede all follow it
+my ($CHECKED) = $src =~ m{\bnearbyChecked: "([^"]+)"} or die "SITE.nearbyChecked not found";
+my ($nearblock) = $src =~ m{\bnearby: \[(.*?)\n  \],}s or die "SITE.nearby not found";
+my @near;
+while ($nearblock =~ m{\{ name: "([^"]+)", addr: "([^"]+)", mi: "([\d.]+)", min: (\d+)(?:, town: "([^"]+)")? \}}g) {
+  push @near, { name => $1, addr => $2, mi => $3, min => $4, town => $5 };
+}
+@near or die "SITE.nearby: no entries parsed";
+my ($sa) = grep { $_->{name} eq 'Downtown San Antonio' } @near or die "nearby: Downtown San Antonio missing";
+(my $sami = $sa->{mi}) =~ s/\.\d+$//;
+$src =~ m{Downtown San Antonio is $sami miles north, about $sa->{min} minutes} or die "Location lede does not match SITE.nearby (San Antonio $sami mi / $sa->{min} min)";
+my $maxmin = (sort { $b <=> $a } map { $_->{min} } @near)[0];
+my $nearhtml = join '', map { my $w = $_->{min} / $maxmin * 100; $w = 6 if $w < 6;
+  '<li><b>' . h($_->{name}) . qq{</b><span class="t num">~$_->{min} min</span><span class="addr">} . h($_->{addr}) . " · $_->{mi} mi</span>"
+  . sprintf('<span class="bar"><i style="width:%d%%"></i></span></li>', $w + 0.5) } @near;
+
 my $faqhtml = join '', map { sprintf '<details%s><summary>%s</summary><p>%s</p></details>',
   ($_ ? '' : ' open'), h($faq[$_][0]), h($faq[$_][1]) } 0 .. $#faq;
 my $faqld = '<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":['
@@ -177,6 +193,12 @@ sub fill {
     $k eq 'OPEN_LOTS' ? lotcards($a, $base) :
     $k eq 'OPEN_COUNT'? scalar(grep { $_->{status} eq 'available' && (!$a || $_->{type} eq $a) } @open) :
     $k eq 'FAQ'       ? qq{<h2>Straight answers</h2>\n$faqhtml} :
+    $k eq 'NEARBY_CHECKED' ? h($CHECKED) :
+    $k eq 'NEARBY_TOWNS'   ? join("\n", map { '<h3>' . h($_->{name}) . " · ~$_->{min} min · $_->{mi} mi</h3><p>" . h($_->{town})
+                               . ' Drive ' . h($_->{addr}) . '.</p>' } grep { $_->{town} } @near) :
+    $k eq 'NEARBY_TABLE'   ? '<table><thead><tr><th>Place</th><th>Route</th><th>Distance</th><th>Drive</th></tr></thead><tbody>'
+                             . join('', map { '<tr><td>' . h($_->{name}) . '</td><td>' . h($_->{addr}) . "</td><td>$_->{mi} mi</td><td><b>~$_->{min} min</b></td></tr>" } @near)
+                             . '</tbody></table>' :
     $k eq 'RATES'     ? '<table><thead><tr><th>Rental</th><th>What it is</th><th>Rent</th></tr></thead><tbody>'
                         . join('', map { my $r = $type{$_}; '<tr><td>' . h($r->{name}) . '</td><td>' . h($r->{desc}) . '</td><td><b>'
                           . (defined $r->{rent} ? ($r->{from} ? 'from ' : '') . money($r->{rent}) . '/mo' : 'Ask us') . '</b></td></tr>' } @types)
@@ -233,7 +255,7 @@ $faq</head>
     <a class="brand" href="${base}index.html" aria-label="Vaquero RV Park home">
       <img class="plate" src="${base}photos/logo-horizontal.webp" alt="Vaquero RV Park, Pleasanton, TX" width="420" height="85">
     </a>
-    <nav class="nav-links"><a href="${base}index.html#lots">Lots</a><a href="${base}index.html#rates">Rates</a><a href="${base}index.html#location">Location</a><a href="${base}index.html#faq">FAQ</a><a href="${base}blog/">Blog</a></nav>
+    <nav class="nav-links"><a href="${base}index.html#lots">Lots</a><a href="${base}index.html#rates">Rates</a><a href="${base}index.html#location">Location</a><a href="${base}index.html#faq">FAQ</a><a href="${base}nearby-towns/">Nearby towns</a><a href="${base}blog/">Blog</a></nav>
     <a class="call" href="$TELHREF">$PHONE</a>
     <a class="btn btn-primary" href="${base}index.html#contact">Inquire</a>
   </div>
@@ -289,6 +311,9 @@ if (@live) {
   $pbody =~ s{(<div><h4>Park</h4>.*?</div>)}{$1\n      <div><h4>Guides</h4><ul>$g</ul></div>}s or die "footer Park column not found";
   $prod .= "\n<style>\@media (min-width:761px){.foot{grid-template-columns:1.4fr 1fr 1fr 1fr}}</style>";
 }
+# drive times in the HTML (same markup the script draws), so readers without JavaScript see the same list
+$pbody =~ s{<ul class="near" id="near"></ul>}{<ul class="near" id="near">$nearhtml</ul>} or die "#near placeholder not found";
+$pbody =~ s{<span id="nearchecked">[^<]*</span>}{<span id="nearchecked">@{[h($CHECKED)]}</span>} or die "#nearchecked not found";
 # latest blog posts in the "Life around Pleasanton" section (static, no script needed)
 my $bl = join '', map { qq{<li><a href="/$_->{slug}/">} . h($_->{crumb}) . '</a><small>' . nicedate($_->{date}) . '</small></li>' }
   @liveposts[0 .. ($#liveposts < 2 ? $#liveposts : 2)];
