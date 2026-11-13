@@ -184,7 +184,7 @@ sub lotcards {
 }
 sub fill {
   my ($t, $base) = @_;
-  $t =~ s{\{\{(\w+)(?::(\w+))?\}\}}{
+  $t =~ s{\{\{(\w+)(?::([\w-]+))?\}\}}{
     my ($k, $a) = ($1, $2);
     $k eq 'PHONE'     ? qq{<a href="$TELHREF">$PHONE</a>} :
     $k eq 'TEL'       ? $TELHREF :
@@ -194,6 +194,12 @@ sub fill {
     $k eq 'OPEN_COUNT'? scalar(grep { $_->{status} eq 'available' && (!$a || $_->{type} eq $a) } @open) :
     $k eq 'FAQ'       ? qq{<h2>Straight answers</h2>\n$faqhtml} :
     $k eq 'NEARBY_CHECKED' ? h($CHECKED) :
+    # {{DRIVE:Floresville}} / {{DRIVE:San_Antonio}} -> "about 30 minutes (24.9 miles via TX-97 E)", from SITE.nearby only
+    ($k eq 'DRIVE' || $k eq 'DRIVE_MIN') ? do { my $q = $a // ''; $q =~ s/_/ /g;
+                               my ($n) = grep { $_->{name} =~ /(?<![\w-])\Q$q\E(?![\w-])/i } @near;
+                               $n or die "{{$k:$a}}: no such place in SITE.nearby\n";
+                               $k eq 'DRIVE_MIN' ? $n->{min}
+                                 : "about $n->{min} minutes ($n->{mi} miles" . ($n->{addr} =~ /^via /i ? ' ' : ', ') . h($n->{addr}) . ')' } :
     $k eq 'NEARBY_TOWNS'   ? join("\n", map { '<h3>' . h($_->{name}) . " · ~$_->{min} min · $_->{mi} mi</h3><p>" . h($_->{town})
                                . ' Drive ' . h($_->{addr}) . '.</p>' } grep { $_->{town} } @near) :
     $k eq 'NEARBY_TABLE'   ? '<table><thead><tr><th>Place</th><th>Route</th><th>Distance</th><th>Drive</th></tr></thead><tbody>'
