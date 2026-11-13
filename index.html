@@ -746,7 +746,7 @@ const SITE = {
   amenities: [
     { name: "Free Wi-Fi", status: "live", desc: "Park-wide outdoor access points. Stream, work, video-call.", icon: "wifi" },
     { name: "24-hr surveillance", status: "live", desc: "Camera coverage around the clock across the property.", icon: "cam" },
-    { name: "Pets welcome", status: "live", desc: "Cats and small dogs are part of the neighborhood here.", icon: "paw" },
+    { name: "Pets welcome", status: "live", desc: "Cats and small dogs are part of the neighborhood here, subject to approval.", icon: "paw" },
     { name: "Security gates", status: "soon", desc: "Controlled entry for residents and their guests.", icon: "gate" },
     { name: "Dog park", status: "soon", desc: "A fenced off-leash area, built with Phase 2.", icon: "bone" },
     { name: "Kids play area", status: "soon", desc: "A central playground, built with Phase 2.", icon: "play" }
@@ -777,7 +777,7 @@ const SITE = {
     ["Do you offer nightly or weekly stays?", "No. Vaquero is a monthly, long-term community. Our leases are built for people who live here."],
     ["What rental types are available?", "RV lots with 30-amp or 50-amp service, park-owned RVs, park-owned tiny homes, and a few rent-to-own homes."],
     ["How much is rent?", "RV lots are $400 per month (30-amp) or $500 per month (50-amp). Park-owned RVs and tiny homes cost more and vary by unit. Each open lot lists its own rent and deposit."],
-    ["Are pets allowed?", "Yes, cats and small dogs are welcome. A fenced dog park is coming with our Phase 2 expansion."],
+    ["Are pets allowed?", "Yes, cats and small dogs are welcome, subject to approval. A fenced dog park is coming with our Phase 2 expansion."],
     ["How do I apply?", "Send us the inquiry form or call or text us. We'll follow up about the lot you want. Approved residents pay rent and send maintenance requests through the resident portal."],
     ["Is there internet?", "Yes. Free Wi-Fi covers the park, and 24-hour camera surveillance is active."],
     ["Where is Vaquero RV Park?", "772 Humble Camp Rd, Pleasanton, Texas 78064, in Atascosa County. Call or text (830) 480-2590 to set up a showing."]
@@ -1038,7 +1038,7 @@ $("#inq").onsubmit=async e=>{
     const av=LOTS.filter(l=>l.status==="available");
     if(/avail|open|vacan|lot/.test(q)) return `We have <b>${av.length} lots open</b>: ${av.map(l=>`Lot ${l.id} (${typeName(l.type)})`).join(", ")}. ${av.map(l=>`Lot ${l.id} is ${money(l.rent)}/month`).join("; ")}.<br><a class="inline" href="#lots">View lots →</a>`;
     if(/rate|rent|price|cost|how much|\$|deposit/.test(q)) return `RV lots are <b>$400/month</b> (30 amp) or <b>$500/month</b> (50 amp). Park-owned RVs and tiny homes vary by unit, and open lots show their rent and $550 deposit.`+applyBtn;
-    if(/pet|dog|cat/.test(q)) return `Cats and small dogs are welcome! A fenced dog park is coming with our Phase 2 expansion.`;
+    if(/pet|dog|cat/.test(q)) return `Cats and small dogs are welcome, subject to approval. A fenced dog park is coming with our Phase 2 expansion.`;
     if(/apply|application|move in|lease/.test(q)) return `Send us the inquiry form or call or text us. We will get back to you quickly.`+applyBtn;
     if(/where|address|locat|direction|heb|h-e-b|walmart|bank|store/.test(q)) return `We're at <b>772 Humble Camp Rd, Pleasanton, TX 78064</b>, about ${nb("H-E-B").min} minutes from H-E-B and ${nb("Wells Fargo Bank").min} from Wells Fargo on Oaklawn Rd, and ${nb("Downtown San Antonio").min} minutes from downtown San Antonio.<br><a class="inline" href="#location">See location →</a> · <a class="inline" href="nearby-towns/">Nearby towns →</a>`;
     if(/wifi|wi-fi|internet|secur|camera|safe|gate/.test(q)) return `Free Wi-Fi covers the park and 24-hour camera surveillance is active. Security gates are coming soon.`;
