@@ -232,8 +232,21 @@ sub render_page {
     '@context' => 'https://schema.org', '@graph' => \@graph }) . '</script>';
   my $crumbs = qq{<a href="${base}index.html">Vaquero RV Park</a> › }
     . ($pg->{parent} ? qq{<a href="$base$pg->{parent}[1]">} . h($pg->{parent}[0]) . '</a> › ' : '') . h($pg->{crumb});
-  my $dateline = $pg->{date} ? '<p class="kicker">' . nicedate($pg->{date}) . ' · Vaquero RV Park</p>' : '';
+  my $dateline = $pg->{date} ? '<p class="kicker">' . nicedate($pg->{date}) . ' · Vaquero RV Park</p>'
+               : $pg->{updated} ? '<p class="kicker">Updated ' . nicedate($pg->{updated}) . '</p>' : '';
   my $faq = $pg->{body} =~ /\{\{FAQ\}\}/ ? $faqld : '';
+  # <!-- faqpage: yes -->: FAQ structured data from every question on the page itself (after tokens are filled)
+  if (($pg->{faqpage} // '') eq 'yes') {
+    my @qa;
+    while ($body =~ m{<details[^>]*>\s*<summary>(.*?)</summary>\s*(.*?)</details>}sg) {
+      my ($q, $a) = ($1, $2);
+      for ($q, $a) { s{<[^>]+>}{}g; s/&amp;/&/g; s/&lt;/</g; s/&gt;/>/g; s/&quot;/"/g; s/\s+/ /g; s/^ | $//g }
+      push @qa, { '@type' => 'Question', name => $q, acceptedAnswer => { '@type' => 'Answer', text => $a } };
+    }
+    @qa or die "$pg->{slug}: faqpage: yes but no <details> questions found\n";
+    $faq = '<script type="application/ld+json">' . JSON::PP->new->canonical->encode({
+      '@context' => 'https://schema.org', '@type' => 'FAQPage', mainEntity => \@qa }) . "</script>\n";
+  }
   return <<"HTML";
 <!doctype html>
 <html lang="en">
@@ -375,6 +388,53 @@ close $r;
 
 my ($day, $mon, $yr) = (localtime)[3,4,5];
 my $today = sprintf('%04d-%02d-%02d', $yr+1900, $mon+1, $day);
+
+# llms.txt (llmstxt.org): plain-text facts for AI assistants, built from the same SITE data as the pages
+{
+  my @am;
+  push @am, { name => $1, status => $2, desc => $3 }
+    while $src =~ m{\{ name: "([^"]+)", status: "(live|soon)", desc: "([^"]+)", icon: "\w+" \}}g;
+  @am or die "SITE.amenities not found";
+  my $rates = join '', map { my $r = $type{$_}; "- $r->{name}: "
+    . (defined $r->{rent} ? ($r->{from} ? 'from ' : '') . money($r->{rent}) . '/month' : 'ask us') . ". $r->{desc}\n" } @types;
+  my @avail = grep { $_->{status} eq 'available' } @open;
+  my $openl = @avail ? join('', map { "- Lot $_->{id}: " . money($_->{rent}) . '/month, ' . money($_->{deposit})
+    . " deposit. $_->{desc}\n" } @avail) : "- No lots open right now. Call or text to join the waitlist.\n";
+  my $faqt = join '', map { "- Q: $_->[0]\n  A: $_->[1]\n" } @faq;
+  my $neart = join '', map { "- $_->{name}: about $_->{min} minutes, $_->{mi} miles ($_->{addr})\n" } @near;
+  my $pagest = join '', map { (my $d = fill($_->{description}, '/')) =~ s{<[^>]+>}{}g;
+    "- [$_->{crumb}]($SITE_URL/$_->{slug}/): $d\n" } @live, @liveposts;
+  my $amt = join '', map { "- $_->{name}" . ($_->{status} eq 'soon' ? ' (coming soon)' : '') . ": $_->{desc}\n" } @am;
+  open my $l, '>:raw', 'dist/llms.txt' or die $!;
+  print $l <<"TXT";
+# Vaquero RV Park
+
+> Long-term RV park in Pleasanton, Texas (Atascosa County), about $sa->{min} minutes south of downtown San Antonio. Monthly RV lots from @{[money($type{lot30}{rent})]}/month, plus park-owned RVs and tiny homes for people without a rig. Monthly stays only: no nightly or weekly stays.
+
+- Address: 772 Humble Camp Rd, Pleasanton, TX 78064
+- Phone (call or text): $PHONE
+- Website: $SITE_URL/
+- How to rent: send the inquiry form at $SITE_URL/#contact, or call or text. Approved residents pay rent through the resident portal.
+- Facts current as of $today. Rent and open lots change; the website is the source of truth.
+
+## Rent by rental type
+$rates
+## Open now
+$openl
+## Amenities
+$amt
+## Drive times from the park (checked on Google Maps, $CHECKED)
+$neart
+## Frequently asked questions
+$faqt
+## Pages
+- [Home]($SITE_URL/): open lots, rates, amenities, location and the inquiry form
+$pagest
+## Optional
+- [Facebook](https://www.facebook.com/profile.php?id=61590798300769)
+TXT
+  close $l;
+}
 open my $s, '>:raw', 'dist/sitemap.xml' or die $!;
 print $s qq{<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n}
         . qq{  <url><loc>$SITE_URL/</loc><lastmod>$today</lastmod><changefreq>weekly</changefreq><priority>1.0</priority></url>\n}
