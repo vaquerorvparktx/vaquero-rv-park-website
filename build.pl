@@ -53,6 +53,7 @@ sub money { my $n = shift; 1 while $n =~ s/^(\d+)(\d{3})/$1,$2/; "\$$n" }
 
 my ($PHONE)   = $src =~ m{\bphone: "([^"]+)"} or die "SITE.phone not found";
 my ($TELHREF) = $src =~ m{\bphoneHref: "([^"]+)"} or die "SITE.phoneHref not found";
+my ($UTIL) = $src =~ m{\butilities: "([^"]+)"} or die "SITE.utilities not found";
 my (%type, @types);
 while ($src =~ m{\{ id: "(\w+)",\s*name: "([^"]*)",\s*desc: "([^"]*)",\s*rent: (null|\d+)(, from: true)? \}}g) {
   push @types, $1;
@@ -188,6 +189,7 @@ sub fill {
     my ($k, $a) = ($1, $2);
     $k eq 'PHONE'     ? qq{<a href="$TELHREF">$PHONE</a>} :
     $k eq 'TEL'       ? $TELHREF :
+    $k eq 'UTILITIES' ? h($UTIL) :   # SITE.utilities: included in the rent on every rental
     $k eq 'BASE'      ? $base :
     $k eq 'RENT'      ? (defined $type{$a // ''}{rent} ? money($type{$a}{rent}) : die "{{RENT:$a}}: no rent for that type\n") :
     $k eq 'OPEN_LOTS' ? lotcards($a, $base) :
@@ -413,6 +415,7 @@ my $today = sprintf('%04d-%02d-%02d', $yr+1900, $mon+1, $day);
 
 - Address: 772 Humble Camp Rd, Pleasanton, TX 78064
 - Phone (call or text): $PHONE
+- Included in the rent on every rental, bare RV lots too: $UTIL. No separate utility bills.
 - Website: $SITE_URL/
 - How to rent: send the inquiry form at $SITE_URL/#contact, or call or text. Approved residents pay rent through the resident portal.
 - Facts current as of $today. Rent and open lots change; the website is the source of truth.
