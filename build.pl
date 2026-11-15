@@ -183,13 +183,19 @@ sub lotcards {
     . qq{<a class="btn btn-primary" href="${base}index.html#lots">See every photo</a></div></div>}
   } @l;
 }
+# <!-- lang: es --> pages: SITE.utilities stays the one source; each word must have a translation or the build stops
+our $LANG = 'en';
+my %UTIL_ES = (electricity => 'luz', water => 'agua', sewer => 'drenaje', trash => 'basura', internet => 'internet', and => 'y');
+sub util_es { join '', map { /^\w+$/ ? ($UTIL_ES{$_} // die "{{UTILITIES}}: no Spanish for '$_' (add it to %UTIL_ES)\n") : $_ } split /(\w+)/, $UTIL }
+sub nicedate_es { my @m = qw(enero febrero marzo abril mayo junio julio agosto septiembre octubre noviembre diciembre);
+  my ($y, $mo, $d) = split /-/, shift; ($d+0) . " de $m[$mo-1] de $y" }
 sub fill {
   my ($t, $base) = @_;
   $t =~ s{\{\{(\w+)(?::([\w-]+))?\}\}}{
     my ($k, $a) = ($1, $2);
     $k eq 'PHONE'     ? qq{<a href="$TELHREF">$PHONE</a>} :
     $k eq 'TEL'       ? $TELHREF :
-    $k eq 'UTILITIES' ? h($UTIL) :   # SITE.utilities: included in the rent on every rental
+    $k eq 'UTILITIES' ? h($LANG eq 'es' ? util_es() : $UTIL) :   # SITE.utilities: included in the rent on every rental
     $k eq 'BASE'      ? $base :
     $k eq 'RENT'      ? (defined $type{$a // ''}{rent} ? money($type{$a}{rent}) : die "{{RENT:$a}}: no rent for that type\n") :
     $k eq 'OPEN_LOTS' ? lotcards($a, $base) :
@@ -217,7 +223,15 @@ sub fill {
 }
 sub render_page {
   my ($pg, $base, $canon) = @_;
+  local $LANG = $pg->{lang} // 'en';
+  my $es = $LANG eq 'es';
   my $body = fill($pg->{body}, $base);
+  # <!-- translation: <slug> -->: hreflang pair, on both pages once both are live (drafts: only on the draft itself)
+  my $alt = '';
+  my ($other) = grep { ($pg->{translation} && $_->{slug} eq $pg->{translation}) || (($_->{translation} // '') eq $pg->{slug} && $_->{status} eq 'live') } @pages;
+  if ($other) {
+    $alt = join '', map { qq{<link rel="alternate" hreflang="} . ($_->{lang} // 'en') . qq{" href="$SITE_URL/$_->{slug}/">\n} } sort { ($a->{lang} // 'en') cmp ($b->{lang} // 'en') } $pg, $other;
+  }
   my ($title, $desc) = map { fill($pg->{$_}, $base) } qw(title description);  # titles may use {{RENT:...}}
   my $guides = join '', map { qq{<li><a href="$base$_->{slug}/">} . h($_->{crumb}) . '</a></li>' } @live;
   # built as data and encoded, so the JSON is always valid (hand-quoted braces broke it once)
@@ -235,7 +249,8 @@ sub render_page {
   my $crumbs = qq{<a href="${base}index.html">Vaquero RV Park</a> › }
     . ($pg->{parent} ? qq{<a href="$base$pg->{parent}[1]">} . h($pg->{parent}[0]) . '</a> › ' : '') . h($pg->{crumb});
   my $dateline = $pg->{date} ? '<p class="kicker">' . nicedate($pg->{date}) . ' · Vaquero RV Park</p>'
-               : $pg->{updated} ? '<p class="kicker">Updated ' . nicedate($pg->{updated}) . '</p>' : '';
+               : $pg->{updated} ? '<p class="kicker">' . ($es ? 'Actualizado el ' . nicedate_es($pg->{updated}) : 'Updated ' . nicedate($pg->{updated})) . '</p>' : '';
+  my ($cta1, $cta2) = $es ? ('Pregunte por un lote', 'Llame o mande texto al') : ('Ask about a lot', 'Call or text');
   my $faq = $pg->{body} =~ /\{\{FAQ\}\}/ ? $faqld : '';
   # <!-- faqpage: yes -->: FAQ structured data from every question on the page itself (after tokens are filled)
   if (($pg->{faqpage} // '') eq 'yes') {
@@ -251,14 +266,14 @@ sub render_page {
   }
   return <<"HTML";
 <!doctype html>
-<html lang="en">
+<html lang="$LANG">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>$title</title>
 <meta name="description" content="@{[h($desc)]}">
 <link rel="canonical" href="$canon">
-<meta name="theme-color" content="#2B1A10">
+$alt<meta name="theme-color" content="#2B1A10">
 <link rel="icon" href="${base}photos/app-icon.png">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Vaquero RV Park">
@@ -285,7 +300,7 @@ $faq</head>
 <article class="lp"><div class="wrap">
 <p class="crumbs">$crumbs</p>
 $dateline$body
-<p class="ctas"><a class="btn btn-primary" href="${base}index.html#contact">Ask about a lot</a> <a class="btn btn-line" href="$TELHREF">Call or text $PHONE</a></p>
+<p class="ctas"><a class="btn btn-primary" href="${base}index.html#contact">$cta1</a> <a class="btn btn-line" href="$TELHREF">$cta2 $PHONE</a></p>
 </div></article>
 </main>
 <footer>
