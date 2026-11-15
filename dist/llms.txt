@@ -7,7 +7,7 @@
 - Included in the rent on every rental, bare RV lots too: electricity, water, sewer, trash and internet. No separate utility bills.
 - Website: https://vaquerorvpark.com/
 - How to rent: send the inquiry form at https://vaquerorvpark.com/#contact, or call or text. Approved residents pay rent through the resident portal.
-- Facts current as of 2026-11-13. Rent and open lots change; the website is the source of truth.
+- Facts current as of 2026-11-14. Rent and open lots change; the website is the source of truth.
 
 ## Rent by rental type
 - RV lot · 30 amp: $400/month. Bring your own RV or travel trailer. 30-amp electrical service.
@@ -58,9 +58,13 @@
 ## Pages
 - [Home](https://vaquerorvpark.com/): open lots, rates, amenities, location and the inquiry form
 - [FAQ](https://vaquerorvpark.com/faq/): Straight answers about Vaquero RV Park in Pleasanton, TX: monthly rent for RV lots and park-owned RVs, pets, Wi-Fi, showings, applying and drive times.
+- [Furnished RV vs your own RV](https://vaquerorvpark.com/furnished-rv-rental-vs-own-rv/): Rent a furnished RV from $700/mo or park your own on a $400/mo lot. What each costs at Vaquero RV Park in Pleasanton, TX, what's included and who it suits.
 - [Monthly RV lots](https://vaquerorvpark.com/monthly-rv-lots-pleasanton-tx/): Monthly RV lots in Pleasanton, Texas. 30-amp $400/mo, 50-amp $500/mo. Free park-wide Wi-Fi, 24/7 cameras, cats and small dogs welcome. Long-term only.
 - [Monthly RV park near San Antonio](https://vaquerorvpark.com/monthly-rv-park-near-san-antonio/): Monthly RV lots from $400/mo and furnished RV rentals in Pleasanton, TX, about 41 minutes south of downtown San Antonio. Free Wi-Fi, 24/7 cameras.
+- [Monthly vs nightly RV parks](https://vaquerorvpark.com/monthly-vs-nightly-rv-parks-san-antonio/): Staying a month or more south of San Antonio? Compare a monthly RV lot at $400/mo, utilities included, with paying nightly, using a published state-park campsite rate.
 - [Nearby towns](https://vaquerorvpark.com/nearby-towns/): Drive times from Vaquero RV Park, 772 Humble Camp Rd, Pleasanton, TX, to Jourdanton, Poteet, Floresville, downtown San Antonio and everyday stops, checked on Google Maps.
+- [Preguntas frecuentes](https://vaquerorvpark.com/preguntas-frecuentes/): Respuestas claras de Vaquero RV Park en Pleasanton, TX: renta mensual de lotes para RV desde $400, casas rodantes en renta, servicios incluidos, mascotas y Wi-Fi.
+- [RV lot vs apartment](https://vaquerorvpark.com/rv-lot-vs-apartment-pleasanton/): An RV lot at Vaquero RV Park is $400/mo with utilities and Wi-Fi included. How that compares with an apartment in Pleasanton, TX, line by line, and what to ask any landlord.
 - [RV park near Floresville](https://vaquerorvpark.com/rv-park-near-floresville-tx/): Monthly RV lots from $400/mo and furnished RV rentals in Pleasanton, about 30 minutes from Floresville, TX. Free Wi-Fi, 24/7 cameras, monthly leases.
 - [RV park near Jourdanton](https://vaquerorvpark.com/rv-park-near-jourdanton-tx/): Monthly RV lots from $400/mo and furnished RV rentals in Pleasanton, about 11 minutes from Jourdanton, TX. Free Wi-Fi, 24/7 cameras, monthly leases.
 - [RV park near Poteet](https://vaquerorvpark.com/rv-park-near-poteet-tx/): Monthly RV lots from $400/mo and furnished RV rentals in Pleasanton, about 14 minutes from Poteet, TX. Free Wi-Fi, 24/7 cameras, monthly leases.
