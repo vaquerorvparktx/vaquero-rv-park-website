@@ -396,7 +396,7 @@ for my $pg (@pages, @posts) {
 }
 
 opendir my $dh, 'photos' or die $!;
-my @photos = grep { /\.(jpg|webp|png)$/i } readdir $dh; closedir $dh;
+my @photos = grep { /\.(jpg|webp|png|mp4)$/i } readdir $dh; closedir $dh;
 copy("photos/$_", "dist/photos/$_") or die "copy $_: $!" for @photos;
 
 open my $r, '>:raw', 'dist/robots.txt' or die $!;

@@ -788,17 +788,19 @@ const SITE = {
 /* Unit roster from Innago (2026-10-01): [lot, type, amps]. Rents of occupied lots stay private; only open lots carry rent/deposit below. */
 const ROWS = [[1,"rvpark",30],[2,"rvpark",30],[3,"lot30",30],[4,"rvpark",30],[5,"tiny",50],[6,"rto",50],[7,"rvpark",30],[8,"lot30",30],[9,"rto",50],[10,"rvpark",30],[11,"lot50",50],[12,"rto",50],[13,"rto",30],[14,"rto",50],[15,"lot30",30],[16,"rvpark",30],[17,"rvpark",30],[18,"rvpark",30],[19,"rvpark",30],[20,"lot30",30],[21,"rvpark",30],[22,"rto",50],[23,"rto",50],[23.5,"rvpark",30],[24,"tiny",50],[25,"lot30",30],[26,"lot30",30],[27,"rvpark",50],[28,"rto",50],[29,"rvpark",50],[30,"rvpark",50],[31,"rvpark",30],[32,"rto",30],[33,"tiny",50]];
 const SPECIAL = {
+  31: { status:"available", type:"rvpark", ph:7, rent:925, deposit:550, desc:"Park-owned 1 bed / 1 bath Crossroads Longhorn RV with a slide-out living room, full kitchen, bunk room and outdoor kitchen, ready for move-in. Utilities, free Wi-Fi and laundry access included. Month-to-month.", features:["1 bed / 1 bath","30-amp","Utilities included","A/C","Refrigerator","Parking included","Cats & small dogs OK"], featured:true, video:"photos/lot31-tour.mp4" },
   10: { status:"available", type:"rvpark", ph:9, rent:725, deposit:550, desc:"Park-owned, furnished 1 bed / 1 bath RV, ready for move-in. Utilities, free Wi-Fi and laundry access included. Month-to-month.", features:["1 bed / 1 bath","30-amp","Furnished","Utilities included","A/C","Refrigerator","Cats & small dogs OK"] },
-  21: { status:"available", type:"rvpark", ph:8, rent:800, deposit:550, desc:"Park-owned 2 bed / 1 bath RV, furnished and ready for move-in. Utilities, free Wi-Fi and laundry access included. Month-to-month.", features:["2 bed / 1 bath","30-amp","Furnished","Utilities included","A/C","Assigned parking","Cats & small dogs OK"] },
-  31: { status:"available", type:"rvpark", ph:3, rent:925, deposit:550, desc:"Park-owned 1 bed / 1 bath RV with a slide-out living room, full kitchen and outdoor kitchen, ready for move-in. Utilities, free Wi-Fi and laundry access included. Month-to-month.", features:["1 bed / 1 bath","30-amp","Utilities included","A/C","Refrigerator","Parking included","Cats & small dogs OK"] }
+  21: { status:"available", type:"rvpark", ph:8, rent:800, deposit:550, desc:"Park-owned 2 bed / 1 bath RV, furnished and ready for move-in. Utilities, free Wi-Fi and laundry access included. Month-to-month.", features:["2 bed / 1 bath","30-amp","Furnished","Utilities included","A/C","Assigned parking","Cats & small dogs OK"] }
 };
 const LOTS = ROWS.map(([id,type,amps],i)=>{
   const s=SPECIAL[id]||{};
   return { id, status:s.status||"occupied", type, amps, rent:s.rent??null, deposit:s.deposit??null,
            desc:s.desc||"Currently leased. Join the waitlist to hear when it opens.", features:s.features||[amps+"-amp"],
            photos:s.ph?Array.from({length:s.ph},(_,k)=>`photos/lot${id}-${k+1}.jpg`):[SITE.photos.front,SITE.photos.hero,SITE.photos.pano],
-           focus:s.ph?"50% 50%":`${(i*29)%100}% ${(i*47)%100}%` };
+           focus:s.ph?"50% 50%":`${(i*29)%100}% ${(i*47)%100}%`, featured:!!s.featured, video:s.video||null };
 });
+/* featured lots (newest vacancy we're pushing) show first; the rest keep lot order */
+LOTS.sort((a,b)=>(b.featured-a.featured));
 
 /* ---------- helpers ---------- */
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
@@ -854,7 +856,7 @@ function renderLots(){
       <div class="ph"><img loading="lazy" src="${l.photos[0]}" alt="Lot ${l.id}, ${esc(typeName(l.type))} at Vaquero RV Park in Pleasanton, TX" style="object-position:${l.focus}"><span class="badge ${l.status}">${STATUS[l.status]}</span></div>
       <div class="body">
         <div class="row"><span class="no num"><small>LOT</small>${lotNo(l.id)}</span>${l.rent!=null?`<span class="rent num">${money(l.rent)}<small>/mo</small></span>`:""}</div>
-        <span class="type">${esc(typeName(l.type))}</span>
+        <span class="type">${esc(typeName(l.type))}${l.video?` · <b>▶ Video tour</b>`:""}</span>
         ${l.deposit!=null?`<span class="dep num">Deposit ${money(l.deposit)}</span>`:""}
       </div>
     </button>`).join(""):`<p class="lede">No lots match. Try another filter, or <a href="#contact">join the waitlist</a>.</p>`;
@@ -873,6 +875,7 @@ function openLot(id){
   $("#dlgbody").innerHTML=`
     <div class="dlg-top"><div style="display:grid;gap:8px"><span class="badge ${l.status}" style="justify-self:start">${STATUS[l.status]}</span><h3 id="dlgtitle">Lot ${lotNo(l.id)}</h3></div></div>
     <p style="color:var(--ink-2)">${esc(l.desc)}</p>
+    ${l.video?`<video src="${l.video}" controls playsinline preload="metadata" poster="${l.photos[0]}" style="width:100%;border-radius:12px;background:#000;max-height:60vh" aria-label="Video tour of Lot ${l.id}"></video>`:""}
     <div class="specs">
       ${l.rent!=null?`<div><span>Monthly rent</span><b class="num">${money(l.rent)}</b></div>`:""}
       ${l.deposit!=null?`<div><span>Deposit</span><b class="num">${money(l.deposit)}</b></div>`:""}
