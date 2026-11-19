@@ -371,6 +371,25 @@ $pbody =~ s{<span id="nearchecked">[^<]*</span>}{<span id="nearchecked">@{[h($CH
 my $bl = join '', map { qq{<li><a href="/$_->{slug}/">} . h($_->{crumb}) . '</a><small>' . nicedate($_->{date}) . '</small></li>' }
   @liveposts[0 .. ($#liveposts < 2 ? $#liveposts : 2)];
 $pbody =~ s{<ul class="bloglist" id="bloglist"></ul>}{<ul class="bloglist" id="bloglist">$bl</ul>} or die "#bloglist placeholder not found";
+# reviews: the static <figure class="quote"> cards in #reviews are the one source; they become
+# schema.org Review items on the home RVPark JSON-LD (no aggregateRating: these are hand-picked
+# Google reviews, not our own full tally) and a section of llms.txt
+our @REVIEWS;
+while ($pbody =~ m{<figure class="quote" data-rating="([1-5])" data-author="([^"]+)" data-source="([^"]+)"(?: data-date="(\d{4}(?:-\d\d)?)")?>\s*<blockquote(?: lang="(\w+)")?>(.*?)</blockquote>}sg) {
+  my %r = (rating => $1, author => $2, source => $3, date => $4, lang => $5 // 'en');
+  ($r{text} = $6) =~ s{<[^>]+>}{}g; $r{text} =~ s/\s+/ /g; $r{text} =~ s/^ | $//g;
+  $r{text} =~ s/&amp;/&/g; $r{text} =~ s/&#39;|&rsquo;/'/g; $r{text} =~ s/&quot;/"/g;
+  push @REVIEWS, \%r;
+}
+if (@REVIEWS) {
+  my $rj = JSON::PP->new->canonical->encode([ map { {
+    '@type' => 'Review', author => { '@type' => 'Person', name => $_->{author} },
+    reviewRating => { '@type' => 'Rating', ratingValue => $_->{rating} + 0, bestRating => 5 },
+    reviewBody => $_->{text}, inLanguage => $_->{lang},
+    publisher => { '@type' => 'Organization', name => $_->{source} },
+    ($_->{date} ? (datePublished => $_->{date}) : ()) } } @REVIEWS ]);
+  $prod =~ s{"petsAllowed":true,}{"review":$rj,"petsAllowed":true,} or die "home JSON-LD petsAllowed not found (reviews)";
+}
 open my $out, '>:raw', 'dist/index.html' or die $!;
 print $out qq{<!doctype html>\n<html lang="en">\n<head>\n$meta$prod\n$faqld</head>\n<body>\n$pbody\n</body>\n</html>\n};
 close $out;
@@ -439,6 +458,8 @@ my $today = sprintf('%04d-%02d-%02d', $yr+1900, $mon+1, $day);
   my $pagest = join '', map { (my $d = fill($_->{description}, '/')) =~ s{<[^>]+>}{}g;
     "- [$_->{crumb}]($SITE_URL/$_->{slug}/): $d\n" } @live, @liveposts;
   my $amt = join '', map { "- $_->{name}" . ($_->{status} eq 'soon' ? ' (coming soon)' : '') . ": $_->{desc}\n" } @am;
+  my $revt = @REVIEWS ? "## What residents say (selected $REVIEWS[0]{source} reviews, quoted as written)\n"
+    . join('', map { "- $_->{rating}/5, $_->{author}" . ($_->{date} ? ", $_->{date}" : '') . ": \"$_->{text}\"\n" } @REVIEWS) . "\n" : '';
   open my $l, '>:raw', 'dist/llms.txt' or die $!;
   print $l <<"TXT";
 # Vaquero RV Park
@@ -458,7 +479,7 @@ $rates
 $openl
 ## Amenities
 $amt
-## Drive times from the park (checked on Google Maps, $CHECKED)
+$revt## Drive times from the park (checked on Google Maps, $CHECKED)
 $neart
 ## Frequently asked questions
 $faqt

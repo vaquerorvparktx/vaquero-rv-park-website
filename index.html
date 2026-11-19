@@ -285,7 +285,13 @@ textarea{min-height:92px;resize:vertical}
 @media (max-width:860px){.fc{grid-template-columns:1fr}}
 @media (max-width:480px){.f2{grid-template-columns:1fr}}
 
-/* reviews cta */
+/* reviews: static quotes (build.pl turns them into Review JSON-LD + llms.txt) and the cta */
+.quotes{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:18px;margin:0 0 44px}
+.quote{margin:0;padding:24px 24px 20px;background:var(--paper);border:1px solid var(--rule);border-radius:4px;display:flex;flex-direction:column;gap:14px}
+.quote blockquote{margin:0;font:italic 400 1.15rem/1.45 var(--serif);color:var(--ink)}
+.quote blockquote p{margin:0}
+.quote figcaption{margin-top:auto;font:400 .8rem/1.4 var(--mono);color:var(--ink-3)}
+.quote .stars{color:var(--gold-line);letter-spacing:.12em;margin-right:6px}
 .rev{display:flex;flex-wrap:wrap;gap:20px 40px;justify-content:space-between;align-items:center}
 .rev p{font:italic 400 clamp(1.4rem,2.6vw,1.9rem)/1.3 var(--serif);max-width:32ch}
 
@@ -626,7 +632,36 @@ dialog{overflow:auto;overscroll-behavior:contain}
   </div>
 </section>
 
-<section class="sec">
+<section class="sec" id="reviews">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Reviews</p>
+      <h2>What residents say</h2>
+      <p class="lede">A few of our Google reviews, quoted as written. <a target="_blank" rel="noopener" href="https://www.google.com/maps?cid=8498488223138810579">Read them all on Google</a>.</p>
+    </div>
+    <div class="quotes">
+      <figure class="quote" data-rating="5" data-author="Shwn M." data-source="Google" data-date="2026-11">
+        <blockquote><p>Ive been here 2 years now and although things were rough at first this place has changed hands and with that changed immensely. I absolutely love my home and the new manager while leaving him unamed is such a fantastic help with everything. If you are looking for a quiet , friendly hometown community feel within an RV park this is the place to be!</p></blockquote>
+        <figcaption><span class="stars" aria-label="5 out of 5 stars">★★★★★</span>Shwn M. · Google review · Nov 2026</figcaption>
+      </figure>
+      <figure class="quote" data-rating="5" data-author="crypto walker" data-source="Google" data-date="2026-11">
+        <blockquote><p>Stayed here for 3 months for a rig job. Very pleasant experience overall with amazing community of fellow residents and responsive, good property manager.</p></blockquote>
+        <figcaption><span class="stars" aria-label="5 out of 5 stars">★★★★★</span>crypto walker · Google review · Nov 2026</figcaption>
+      </figure>
+      <figure class="quote" data-rating="5" data-author="Brittanie R." data-source="Google" data-date="2025">
+        <blockquote><p>I live the camper life so I've been to many camp grounds but this one is inexpensive and so clean n quiet.. The lots r very spacish.. I'm for sure a happy camper lady</p></blockquote>
+        <figcaption><span class="stars" aria-label="5 out of 5 stars">★★★★★</span>Brittanie R. · Google review · 2025 (excerpt)</figcaption>
+      </figure>
+      <figure class="quote" data-rating="5" data-author="Jhon G." data-source="Google" data-date="2026">
+        <blockquote lang="es"><p>Es un buen lugar para vivir, cómodo y tranquilo.</p></blockquote>
+        <figcaption><span class="stars" aria-label="5 out of 5 stars">★★★★★</span>Jhon G. · Google review · 2026 · "A good place to live, comfortable and peaceful"</figcaption>
+      </figure>
+      <figure class="quote" data-rating="5" data-author="David B." data-source="Google" data-date="2026-11">
+        <blockquote><p>Property management is very helpful and kind</p></blockquote>
+        <figcaption><span class="stars" aria-label="5 out of 5 stars">★★★★★</span>David B. · Google review · Nov 2026</figcaption>
+      </figure>
+    </div>
+  </div>
   <div class="wrap rev">
     <p>Live here already? A quick review helps your future neighbors find us.</p>
     <div style="display:flex;gap:10px;flex-wrap:wrap">
