@@ -375,7 +375,7 @@ $pbody =~ s{<ul class="bloglist" id="bloglist"></ul>}{<ul class="bloglist" id="b
 # schema.org Review items on the home RVPark JSON-LD (no aggregateRating: these are hand-picked
 # Google reviews, not our own full tally) and a section of llms.txt
 our @REVIEWS;
-while ($pbody =~ m{<figure class="quote" data-rating="([1-5])" data-author="([^"]+)" data-source="([^"]+)"(?: data-date="(\d{4}(?:-\d\d)?)")?>\s*<blockquote(?: lang="(\w+)")?>(.*?)</blockquote>}sg) {
+while ($pbody =~ m{<figure class="quote[^"]*" data-rating="([1-5])" data-author="([^"]+)" data-source="([^"]+)"(?: data-date="(\d{4}(?:-\d\d)?)")?>\s*<blockquote(?: lang="(\w+)")?>(.*?)</blockquote>}sg) {
   my %r = (rating => $1, author => $2, source => $3, date => $4, lang => $5 // 'en');
   ($r{text} = $6) =~ s{<[^>]+>}{}g; $r{text} =~ s/\s+/ /g; $r{text} =~ s/^ | $//g;
   $r{text} =~ s/&amp;/&/g; $r{text} =~ s/&#39;|&rsquo;/'/g; $r{text} =~ s/&quot;/"/g;

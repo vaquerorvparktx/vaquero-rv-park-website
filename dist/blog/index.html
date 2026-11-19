@@ -292,12 +292,39 @@ textarea{min-height:92px;resize:vertical}
 @media (max-width:480px){.f2{grid-template-columns:1fr}}
 
 /* reviews: static quotes (build.pl turns them into Review JSON-LD + llms.txt) and the cta */
-.quotes{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:18px;margin:0 0 44px}
-.quote{margin:0;padding:24px 24px 20px;background:var(--paper);border:1px solid var(--rule);border-radius:4px;display:flex;flex-direction:column;gap:14px}
-.quote blockquote{margin:0;font:italic 400 1.15rem/1.45 var(--serif);color:var(--ink)}
+#reviews{position:relative;overflow:hidden;background:radial-gradient(1200px 420px at 85% -10%,color-mix(in srgb,var(--gold-line) 16%,transparent),transparent 70%),var(--ground)}
+.rv-badge{width:fit-content;display:inline-flex;align-items:center;gap:12px;margin-top:18px;padding:10px 16px 10px 12px;background:var(--paper);border:1px solid var(--rule);border-radius:999px;text-decoration:none;color:var(--ink);font:500 .8rem/1 var(--mono);letter-spacing:.04em;box-shadow:0 8px 22px -16px rgba(43,26,16,.55);transition:transform .25s,box-shadow .25s}
+.rv-badge:hover{transform:translateY(-2px);box-shadow:0 14px 28px -16px rgba(43,26,16,.6)}
+.rv-badge svg{width:20px;height:20px;flex:none}
+.rv-badge b{color:var(--gold-line);letter-spacing:.14em}
+.quotes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;margin:0 0 48px;counter-reset:q}
+.quote{position:relative;margin:0;padding:34px 26px 22px;background:var(--paper);border:1px solid var(--rule);border-radius:14px;display:flex;flex-direction:column;gap:18px;box-shadow:0 1px 0 rgba(255,255,255,.5) inset,0 18px 40px -30px rgba(43,26,16,.55);transition:transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s,border-color .35s;isolation:isolate}
+.quote::before{content:"\201C";position:absolute;top:-6px;left:18px;font:700 6rem/1 Georgia,"Times New Roman",serif;color:var(--gold-line);opacity:.4;z-index:-1}
+.quote::after{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;background:linear-gradient(135deg,var(--gold-line),transparent 40%,transparent 60%,var(--brass));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:opacity .35s;pointer-events:none}
+.quote:hover{transform:translateY(-6px) rotate(-.3deg);box-shadow:0 30px 50px -28px rgba(43,26,16,.7);border-color:transparent}
+.quote:hover::after{opacity:1}
+.quote blockquote{margin:0;font:italic 400 1.12rem/1.5 var(--serif);color:var(--ink)}
 .quote blockquote p{margin:0}
-.quote figcaption{margin-top:auto;font:400 .8rem/1.4 var(--mono);color:var(--ink-3)}
-.quote .stars{color:var(--gold-line);letter-spacing:.12em;margin-right:6px}
+.quote figcaption{margin-top:auto;display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;column-gap:12px;row-gap:3px;align-items:center;font:400 .76rem/1.4 var(--mono);color:var(--ink-3)}
+.quote .av{grid-row:1/3;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font:600 1.05rem/1 var(--slab);color:var(--brand-cream);background:linear-gradient(140deg,var(--denim),var(--brass))}
+.quote .who{color:var(--ink);font-weight:500;letter-spacing:.02em}
+.quote .stars{color:var(--gold-line);letter-spacing:.14em;margin-right:6px}
+.quote .tr{grid-column:1/-1;margin-top:8px;font:italic 400 .85rem/1.4 var(--serif);color:var(--ink-2)}
+.quote.feature{grid-column:span 2;background:linear-gradient(150deg,var(--brand-dark) 0%,#4a2a17 100%);border-color:transparent;padding:44px 40px 30px}
+.quote.feature blockquote{font-size:clamp(1.3rem,2.2vw,1.65rem);line-height:1.4;color:var(--brand-cream)}
+.quote.feature::before{color:var(--brand-gold);opacity:.5;font-size:8rem;top:-14px}
+.quote.feature figcaption,.quote.feature .who{color:var(--brand-cream)}
+.quote.feature .av{background:linear-gradient(140deg,var(--brand-gold),var(--brass));color:var(--brand-dark)}
+@supports (animation-timeline:view()){
+  @media (prefers-reduced-motion:no-preference){
+    .quote{animation:q-rise linear both;animation-timeline:view();animation-range:entry 0% cover 28%}
+    @keyframes q-rise{from{opacity:0;transform:translateY(40px) scale(.97)}to{opacity:1;transform:none}}
+  }
+}
+@media (max-width:860px){
+  .quotes{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:min(84%,360px);overflow-x:auto;scroll-snap-type:x mandatory;padding:4px 2px 18px;scrollbar-width:thin}
+  .quote,.quote.feature{grid-column:auto;scroll-snap-align:start;padding:32px 22px 20px;animation:none}
+}
 .rev{display:flex;flex-wrap:wrap;gap:20px 40px;justify-content:space-between;align-items:center}
 .rev p{font:italic 400 clamp(1.4rem,2.6vw,1.9rem)/1.3 var(--serif);max-width:32ch}
 
