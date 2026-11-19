@@ -173,7 +173,10 @@ my $LDBIZ = { '@type' => 'RVPark', name => 'Vaquero RV Park', url => "$SITE_URL/
 sub lotcards {
   my ($want, $base) = @_;
   my @l = grep { $_->{status} eq 'available' && (!$want || $_->{type} eq $want) } @open;
+  my $es = ($main::LANG // 'en') eq 'es';
+  return qq{<p>Hoy no hay nada disponible en esta categoría. Anótese en la lista de espera: llame o mande texto al <a href="$TELHREF">$PHONE</a> y será el primero en saber.</p>} if $es && !@l;
   return qq{<p>Nothing open in this category today. Get on the waitlist: call or text <a href="$TELHREF">$PHONE</a> and you'll hear first.</p>} unless @l;
+  return join "\n", map { lotcard_es($_, $base) } @l if $es;
   join "\n", map {
     my $l = $_; my $tn = h($type{$l->{type}}{name} // $l->{type});
     my $img = $l->{ph} ? "photos/lot$l->{id}-1.jpg" : 'photos/aerial-front.jpg';
@@ -182,6 +185,20 @@ sub lotcards {
     . '<p>' . h($l->{desc}) . '</p><ul class="feat">' . join('', map { '<li>' . h($_) . '</li>' } @{$l->{features}}) . '</ul>'
     . qq{<a class="btn btn-primary" href="${base}index.html#lots">See every photo</a></div></div>}
   } @l;
+}
+# Spanish lot card (<!-- lang: es --> pages): no English desc; features translated, unknown ones left out
+my %FEAT_ES = ('1 bed / 1 bath' => '1 recámara / 1 baño', '2 bed / 1 bath' => '2 recámaras / 1 baño', '2 bed / 2 bath' => '2 recámaras / 2 baños',
+  '30-amp' => '30 amperios', '50-amp' => '50 amperios', 'Furnished' => 'Amueblada', 'Utilities included' => 'Servicios incluidos',
+  'A/C' => 'Aire acondicionado', 'Refrigerator' => 'Refrigerador', 'Parking included' => 'Estacionamiento incluido',
+  'Assigned parking' => 'Estacionamiento asignado', 'Cats & small dogs OK' => 'Se aceptan gatos y perros pequeños');
+my %TYPE_ES = (rvpark => 'RV del parque', lot30 => 'Lote para RV (30 amperios)', lot50 => 'Lote para RV (50 amperios)', tiny => 'Casita (tiny home)');
+sub lotcard_es {
+  my ($l, $base) = @_; my $tn = h($TYPE_ES{$l->{type}} // $type{$l->{type}}{name} // $l->{type});
+  my $img = $l->{ph} ? "photos/lot$l->{id}-1.jpg" : 'photos/aerial-front.jpg';
+  qq{<div class="lp-lot"><img src="$base$img" alt="Lote $l->{id}, $tn en Vaquero RV Park en Pleasanton, TX" width="480" height="320" loading="lazy">}
+  . qq{<div><h3>Lote $l->{id} · } . money($l->{rent}) . qq{/mes</h3><p class="dep">$tn · depósito } . money($l->{deposit}) . qq{</p>}
+  . '<ul class="feat">' . join('', map { '<li>' . h($FEAT_ES{$_}) . '</li>' } grep { $FEAT_ES{$_} } @{$l->{features}}) . '</ul>'
+  . qq{<a class="btn btn-primary" href="${base}index.html#lots">Ver todas las fotos</a></div></div>}
 }
 # <!-- lang: es --> pages: SITE.utilities stays the one source; each word must have a translation or the build stops
 our $LANG = 'en';
@@ -228,7 +245,7 @@ sub render_page {
   my $body = fill($pg->{body}, $base);
   # <!-- translation: <slug> -->: hreflang pair, on both pages once both are live (drafts: only on the draft itself)
   my $alt = '';
-  my ($other) = grep { ($pg->{translation} && $_->{slug} eq $pg->{translation}) || (($_->{translation} // '') eq $pg->{slug} && $_->{status} eq 'live') } @pages;
+  my ($other) = grep { ($pg->{translation} && $_->{slug} eq $pg->{translation}) || (($_->{translation} // '') eq $pg->{slug} && $_->{status} eq 'live') } @pages, @posts;
   if ($other) {
     $alt = join '', map { qq{<link rel="alternate" hreflang="} . ($_->{lang} // 'en') . qq{" href="$SITE_URL/$_->{slug}/">\n} } sort { ($a->{lang} // 'en') cmp ($b->{lang} // 'en') } $pg, $other;
   }
